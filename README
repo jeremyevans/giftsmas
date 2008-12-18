@@ -9,6 +9,7 @@ gifts that any member of the family received for Christmas.
 * ruby
 * rubygems
 * postgresql
+* ruby-pg, ruby-postgres, or postgres-pr
 * sinatra (0.3.1)
 * sequel (git HEAD)
 * sequel_postgresql_triggers (1.0.1, from github)
