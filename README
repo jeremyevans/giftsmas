@@ -9,6 +9,7 @@ gifts that any member of the family received for Christmas.
 * ruby
 * rubygems
 * postgresql
+* openssl binary (used for salt generation)
 * ruby-pg, ruby-postgres, or postgres-pr
 * sinatra (0.3.1)
 * sequel (git HEAD)
