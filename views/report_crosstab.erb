@@ -1,0 +1,17 @@
+<% @title = 'Gift Summary Crosstab' %>
+
+<table>
+<thead><tr><th>Sender\Receiver</th>
+<% @headers.each do |x| %>
+  <th><%=h x.to_s%></th>
+<% end %>
+</tr></thead>
+<tbody>
+<% @rows.each do |r| %>
+  <tr><td><%=h r.shift %></td>
+  <% r.each do |x| %>
+    <td><%= x%></td>
+  <% end %>
+  </tr>
+<% end %>
+</tbody></table>

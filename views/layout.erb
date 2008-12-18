@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en" >
+
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<% @title ||= @scaffold_title %>
+<title>Giftsmas<%= " - #{@title}" if @title %></title>
+<link rel="stylesheet" type="text/css" href="/application.css" />
+<%= "<style type='text/css'>#{@style}</style>" if @style %>
+<%= @head %>
+</head>
+
+<body>
+<div id="content">
+<% @title ||= @scaffold_title %>
+<%= "<h1>#{@title}</h1>" if @title %>
+<%= "<h4>#{@flash}</h4>" if @flash %>
+<%= yield %>
+</div>
+
+<div id="nav">
+<a href="/" id="banner">Giftsmas</a>
+<% if @event %>
+<h4>Event: <%=h @event.name %></h4>
+<a href="/manage/edit_event_receivers/<%= @event.id %>">Associate Receivers</a>
+<a href="/manage/edit_event_senders/<%= @event.id %>">Associate Senders</a>
+<a href="/choose_event">Change Event</a>
+
+<h4>Gift Reports</h4>
+<a href="/reports/chronological">In Chronological Order</a>
+<a href="/reports/by_receiver">By Receiver</a>
+<a href="/reports/by_sender">By Sender</a>
+<a href="/reports/summary">Summary</a>
+<a href="/reports/crosstab">Summary Crosstab</a>
+
+<h4>Other</h4>
+<a href="/manage/manage_event">Manage Events</a>
+<a href="/manage/manage_gift">Manage Gifts</a>
+<a href="/manage/manage_person">Manage People</a>
+<% end %>
+<% if @user %>
+<form action="/logout" method="post"><input type="submit" value="Logout" /></form>
+<% end %>
+</div>
+</body></html>

@@ -1,0 +1,15 @@
+<% @title = "#{@user.events.empty? ? 'Create' : 'Choose'} Your Event" %>
+
+<% unless @user.events.empty? %>
+  <h2>Choose an Existing Event</h2>
+  <form action="/choose_event" method="post">
+    Event: <%= model_select(:event_id, @user.events) %><br />
+    <input type="submit" value="Choose Event" />
+  </form>
+  <h2>Create a New Event</h2>
+<% end %>
+
+<form action="/add_event" method="post">
+  Name: <input type="text" name="name" /><br />
+  <input type="submit" value="Create New Event" />
+</form>

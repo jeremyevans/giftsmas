@@ -1,0 +1,21 @@
+<% @title = 'Gift Summary' %>
+
+<h3>Total Number of Gifts: <%= @event.num_gifts %></h3>
+
+<table>
+<caption>Totals By Sender</caption>
+<thead><tr><th>Sender</th><th>Number of Gifts</th></tr></thead>
+<tbody>
+<% @senders.each do |s,n| %>
+  <tr><td><%=h s%></td><td><%= n %></td></tr>
+<% end %>
+</tbody></table>
+
+<table>
+<caption>Totals By Receiver</caption>
+<thead><tr><th>Receiver</th><th>Number of Gifts</th></tr></thead>
+<tbody>
+<% @receivers.each do |s,n| %>
+  <tr><td><%=h s%></td><td><%= n %></td></tr>
+<% end %>
+</tbody></table>

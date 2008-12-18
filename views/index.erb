@@ -1,0 +1,20 @@
+<% @title = 'Add Gift' %>
+
+<form method='post' action='/add_gift'>
+Gift: <input type="text" name="gift" size="60" />
+<% unless @event.senders.empty? %>
+  <div class="giftpeople">
+    Senders: <%= model_select(:senders, @event.senders, :multiple=>'multiple') %><br />
+  </div>
+<% end %>
+<% unless @event.receivers.empty? %>
+  <div class="giftpeople">
+    Receivers: <%= model_select(:receivers, @event.receivers, :multiple=>'multiple') %><br />
+  </div>
+<% end %>
+<div class="giftpeople">
+  New Senders: <input type="text" name="new_senders" /><br />
+  New Receivers: <input type="text" name="new_receivers" /><br />
+</div>
+<input id="add_gift_button" type="submit" value="Add Gift" />
+</form>
