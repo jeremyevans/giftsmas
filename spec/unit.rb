@@ -164,7 +164,7 @@ describe User do
     salt = @user.salt
     @user.password = 'blah'
     @user.salt.should_not == salt
-    @user.salt.should =~ /\A[0-9a-f]{40}\z/
+    @user.salt.should =~ /\A[0-9a-zA-Z]{40}\z/
   end
 
   specify "#password= should set the SHA1 password hash based on the salt and password" do

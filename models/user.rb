@@ -9,7 +9,13 @@ class User < Sequel::Model
   end
   
   def password=(pass)
-    self.salt = `openssl rand -hex 20`
+    self.salt = new_salt
     self[:password] = ::Digest::SHA1.new.update(salt).update(pass).hexdigest
+  end
+
+  private
+
+  def new_salt
+    (0...40).map{(i = Kernel.rand(62); i += ((i < 10) ? 48 : ((i < 36) ? 55 : 61 ))).chr}.join
   end
 end
