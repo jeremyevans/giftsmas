@@ -62,6 +62,16 @@ describe Event do
     g3 = Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
     @event.reload.gifts_summary.should == [[['R', 1], ['S', 2]], [['R', 2], ['S', 1]]]
   end
+
+  specify "#thank_you_notes should be a sorted hash of receivers with values being a sorted hash of senders with an associated array of gifts, excluding gifts where the sender was a receiver in the event" do
+    @event.thank_you_notes.should == []
+    g = Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
+    @event.reload.thank_you_notes.should == [['R', [['S', ['G']]]]]
+    g2 = Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
+    @event.reload.thank_you_notes.should == [['R', [['S', ['G', 'G2']]]]]
+    g3 = Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
+    @event.reload.thank_you_notes.should == []
+  end
 end
 
 describe Gift do

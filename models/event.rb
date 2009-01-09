@@ -3,7 +3,7 @@ class Event < Sequel::Model
   @scaffold_session_value = :user_id
   @scaffold_associations = [:gifts, :receivers, :senders]
   many_to_one :user
-  one_to_many :gifts, :order=>:inserted_at, :eager=>[:receivers, :senders], :order=>:inserted_at
+  one_to_many :gifts, :eager=>[:receivers, :senders], :order=>:inserted_at
   many_to_many :senders, :class=>:Person, :join_table=>:event_senders, :right_key=>:person_id, :order=>:name
   many_to_many :receivers, :class=>:Person, :join_table=>:event_receivers, :right_key=>:person_id, :order=>:name
 
@@ -46,5 +46,20 @@ class Event < Sequel::Model
       g.receivers.each{|s| receivers[s.name] += 1}
     end
     [senders.sort, receivers.sort]
+  end
+
+  def thank_you_notes
+    receivers = Hash.new{|h,k| h[k] = Hash.new{|h2,k| h2[k] = []}}
+    person_ids = model.db[:gifts].join(:gift_receivers, :gift_id=>:id).filter(:event_id=>id).select(:person_id).distinct(:person_id).order(:person_id).map(:person_id)
+    gifts.each do |g|
+      g.receivers.each do |r|
+        g.senders.reject{|s| person_ids.include?(s.id)}.each{|s| receivers[r.name][s.name] << g.name}
+      end
+    end
+    receivers.values.each do |h| 
+      h.values.each{|h2| h2.sort}
+      h.sort
+    end
+    receivers.sort.map{|k, v| [k, v.sort.map{|k2, v2| [k2, v2.sort]}]}
   end
 end

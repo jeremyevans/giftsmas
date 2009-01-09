@@ -191,8 +191,8 @@ context "Giftsmas" do
     (n/:h4).mapih.should == ['Event: Christmas', 'Gift Reports', 'Other']
     as = n/:a
     eid = Event.first.id
-    as.maphr.should == ["/", "/manage/edit_event_receivers/#{eid}", "/manage/edit_event_senders/#{eid}", "/choose_event", "/reports/chronological", "/reports/by_receiver", "/reports/by_sender", "/reports/summary", "/reports/crosstab", "/manage/manage_event", "/manage/manage_gift", "/manage/manage_person"]
-    as.mapit.should == ["Giftsmas", "Associate Receivers", "Associate Senders", "Change Event", "In Chronological Order", "By Receiver", "By Sender", "Summary", "Summary Crosstab", "Manage Events", "Manage Gifts", "Manage People"]
+    as.maphr.should == ["/", "/manage/edit_event_receivers/#{eid}", "/manage/edit_event_senders/#{eid}", "/choose_event", "/reports/chronological", "/reports/by_receiver", "/reports/by_sender", "/reports/summary", "/reports/crosstab", "/reports/thank_yous", "/manage/manage_event", "/manage/manage_gift", "/manage/manage_person"]
+    as.mapit.should == ["Giftsmas", "Associate Receivers", "Associate Senders", "Change Event", "In Chronological Order", "By Receiver", "By Sender", "Summary", "Summary Crosstab", "Thank You Notes", "Manage Events", "Manage Gifts", "Manage People"]
   end
 
   specify "/add_gift should add gifts correctly" do
@@ -342,6 +342,32 @@ context "Giftsmas" do
     table = tables.first
     (table/:th).mapit.should == ['Sender\Receiver', 'P2', 'P4']
     (table/"tbody tr").map{|x| (x/:td).mapit}.should == [%w'P1 2 1', %w'P3 1 2']
+
+    c = content('/reports/thank_yous', :title=>'Thank You Notes', :session=>session)
+    uls1 = c/"> ul"
+    uls1.length.should == 1
+    lis1 = uls1/"> li"
+    lis1.length.should == 2
+    lis1.mapatt("class").should == ['persongifts']*2
+    li1 = lis1.first
+    li1.it.should =~ /\AP2/
+    lis2 = li1/"> ul > li"
+    li2 = lis2.first 
+    li2.it.should =~ /\AP1/
+    (li2/"> ul > li").mapit.should == %w'G1 G2'
+    li2 = lis2.last
+    li2.it.should =~ /\AP3/
+    (li2/"> ul > li").mapit.should == %w'G4'
+    lis1.last.it.should =~ /\AP4/
+    li1 = lis1.last
+    li1.it.should =~ /\AP4/
+    lis2 = li1/"> ul > li"
+    li2 = lis2.first 
+    li2.it.should =~ /\AP1/
+    (li2/"> ul > li").mapit.should == %w'G3'
+    li2 = lis2.last
+    li2.it.should =~ /\AP3/
+    (li2/"> ul > li").mapit.should == %w'G3 G4'
   end
 
   specify "users can't see other other users events, people, or gifts" do

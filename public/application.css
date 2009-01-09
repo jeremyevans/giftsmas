@@ -139,5 +139,5 @@ ul.scaffold_associated_records_list li form { display: inline; }
         position: static;
         width: 99%;
     }
-    table.persongifts { page-break-after: always; }
+    .persongifts { page-break-after: always; }
 }

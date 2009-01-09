@@ -1,6 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'sinatra'
+set(:appfile=>'giftsmas.rb', :views=>'views')
 require 'cgi'
 enable :sessions
 
@@ -30,6 +31,9 @@ helpers do
 end
 
 error do
+  e = request.env['sinatra.error']
+  puts e.message
+  e.backtrace.each{|x| puts x}
   render(:erb, "<h3>Oops, an error occurred.</h3>")
 end
 
@@ -86,6 +90,11 @@ end
 get '/reports/by_receiver' do
   @receivers = @event.gifts_by_receiver
   render :erb, :report_receiver
+end
+
+get '/reports/thank_yous' do
+  @receivers = @event.thank_you_notes
+  render :erb, :report_thank_yous
 end
 
 get '/login' do
