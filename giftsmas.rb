@@ -139,7 +139,19 @@ class GiftsmasSE < Sinatra::Base
   scaffold_all_models :only=>[Event, Gift, Person]
 end
 
+class FileServer
+  def initialize(app, root)
+    @app = app
+    @rfile = Rack::File.new(root)
+  end
+  def call(env)
+    res = @rfile.call(env)
+    res[0] == 200 ? res : @app.call(env)
+  end
+end
+
 app = Rack::Builder.app do
+  use FileServer, 'public'
   map "/" do
     run Giftsmas
   end
