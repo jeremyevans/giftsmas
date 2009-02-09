@@ -13,5 +13,4 @@ rescue LoadError
   DB = Sequel.connect("postgres:///giftsmas#{'_test' if GIFTSMAS_ENV != :production}")
 end
 
-DB.schema
 %w'user event person gift'.each{|x| require "models/#{x}"}
