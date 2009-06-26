@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 require 'rubygems'
+require 'erb'
 require 'sinatra/base'
 require 'cgi'
 require 'models'
@@ -10,7 +11,7 @@ PersonSplitter = /,/ unless defined?(PersonSplitter)
 
 class Sinatra::Base
   set(:appfile=>'giftsmas.rb', :views=>'views')
-  enable :sessions
+  enable :sessions, :static
   disable :run
 
   def h(text)
@@ -47,7 +48,7 @@ class Sinatra::Base
       redirect('/login', 303) if !session[:user_id] or !(@user = User[session[:user_id]])
       unless %w'/choose_event /add_event'.include?(request.env['REQUEST_PATH'])
         @event = Event[session[:event_id]] if session[:event_id]
-        redirect('/choose_event', 303) if !session[:event_id] or !(@event = Event[session[:event_id]])
+        redirect('/choose_event', 303) unless @event
       end
     end
   end
@@ -139,31 +140,11 @@ class GiftsmasSE < Sinatra::Base
   scaffold_all_models :only=>[Event, Gift, Person]
 end
 
-class FileServer
-  def initialize(app, root)
-    @app = app
-    @rfile = Rack::File.new(root)
-  end
-  def call(env)
-    res = @rfile.call(env)
-    res[0] == 200 ? res : @app.call(env)
-  end
-end
-
-app = Rack::Builder.app do
-  use FileServer, 'public'
+GiftsmasApp = Rack::Builder.app do
   map "/" do
     run Giftsmas
   end
   map "/manage" do
     run GiftsmasSE
-  end
-end
-
-puts "Starting"
-Rack::Handler.get('mongrel').run(app, :Host=>'0.0.0.0', :Port=>3002) do |server|
-  trap(:INT) do
-    server.stop
-    puts "Stopping"
   end
 end

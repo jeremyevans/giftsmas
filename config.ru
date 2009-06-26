@@ -1,0 +1,2 @@
+require 'giftsmas'
+run GiftsmasApp

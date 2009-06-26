@@ -1,6 +1,6 @@
 --- 
 :port: 9571
-:adapter: giftsmas
+:adapter: giftsmas_integration
 :handler: mongrel
 :logfile: spec/style.log
 :pidfile: spec/style.pid

@@ -10,7 +10,7 @@ end
 begin
   load File.join(File.dirname(__FILE__), 'config.rb')
 rescue LoadError
-  DB = Sequel.connect("postgres:///giftsmas#{'_test' if GIFTSMAS_ENV != :production}")
+  DB = Sequel.connect(ENV['DATABASE_URL'] || "postgres:///giftsmas#{'_test' if GIFTSMAS_ENV != :production}")
 end
 
 %w'user event person gift'.each{|x| require "models/#{x}"}
