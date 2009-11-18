@@ -8,11 +8,19 @@ require 'scaffolding_extensions'
 
 ScaffoldingExtensions::MetaModel::SCAFFOLD_OPTIONS[:text_to_string] = true
 PersonSplitter = /,/ unless defined?(PersonSplitter)
+SECRET_FILE = File.join(File.dirname(__FILE__), 'giftsmas.secret')
+begin
+  File.open(SECRET_FILE, 'wb'){|f| f.write(User.new.send(:new_salt))} unless File.file?(SECRET_FILE)
+  SECRET = File.read(SECRET_FILE)
+rescue
+  SECRET = nil
+end
 
 class Sinatra::Base
   set(:appfile=>'giftsmas.rb', :views=>'views')
-  enable :sessions, :static
+  enable :static
   disable :run
+  use Rack::Session::Cookie, :secret=>SECRET
 
   def h(text)
     CGI.escapeHTML(text)
