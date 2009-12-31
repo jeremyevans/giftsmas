@@ -69,10 +69,12 @@ class Giftsmas < Sinatra::Base
   post '/add_gift' do
     new_senders = params[:new_senders].split(PersonSplitter).map{|name| name.strip}.reject{|name| name.empty?}
     new_receivers = params[:new_receivers].split(PersonSplitter).map{|name| name.strip}.reject{|name| name.empty?}
-    session[:flash] = if gift = Gift.add(@event, params[:gift].strip, Array(params[:senders]), Array(params[:receivers]), new_senders, new_receivers)
+    senders = params[:senders].is_a?(Hash) ? params[:senders].keys : []
+    receivers = params[:receivers].is_a?(Hash) ? params[:receivers].keys : []
+    session[:flash] = if gift = Gift.add(@event, params[:gift].to_s.strip, senders, receivers, new_senders, new_receivers)
       "Gift Added: #{h gift.name}<br />Senders: #{gift.senders.map{|s| s.name}.join(', ')}<br />Receivers: #{gift.receivers.map{|s| s.name}.join(', ')}"
     else
-      "Gift Not Added: You must have at least one sender and receiver."
+      "Gift Not Added: You must specify a name and at least one sender and receiver."
     end
     redirect('/', 303)
   end
@@ -137,8 +139,13 @@ class Giftsmas < Sinatra::Base
   end
   
   post '/add_event' do
-    e = Event.create(:user_id=>@user.id, :name=>params[:name])
-    session[:event_id] = e.id
+    name = params[:name].to_s.strip
+    if name.empty?
+      session[:flash] = "Must provide a name for the event"
+    else
+      e = Event.create(:user_id=>@user.id, :name=>params[:name])
+      session[:event_id] = e.id
+    end
     redirect('/', 303)
   end
 end

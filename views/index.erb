@@ -1,20 +1,21 @@
 <% @title = 'Add Gift' %>
 
 <form method='post' action='/add_gift'>
-Gift: <input type="text" name="gift" size="60" />
-<% unless @event.senders.empty? %>
+Gift: <input type="text" id="gift" name="gift" size="60" /><br />
+
+<% [:senders, :receivers].each do |sr|
+x = @event.send(sr)
+unless x.empty? %>
   <div class="giftpeople">
-    Senders: <%= model_select(:senders, @event.senders, :multiple=>'multiple') %><br />
+    <%= sr.to_s.capitalize %>:<br />
+    <% x.each do |p| %>
+      <input type="checkbox" id="<%= sr %>_<%= p.id %>" name="<%= sr %>[<%= p.id %>]" value="<%= p.id %>" /> <label for="<%= sr %>_<%= p.id %>"><%= p.name %></label><br />
+    <% end %>
   </div>
-<% end %>
-<% unless @event.receivers.empty? %>
-  <div class="giftpeople">
-    Receivers: <%= model_select(:receivers, @event.receivers, :multiple=>'multiple') %><br />
-  </div>
-<% end %>
+<% end end %>
 <div class="giftpeople">
   New Senders: <input type="text" name="new_senders" /><br />
   New Receivers: <input type="text" name="new_receivers" /><br />
+  <input id="add_gift_button" type="submit" value="Add Gift" />
 </div>
-<input id="add_gift_button" type="submit" value="Add Gift" />
 </form>

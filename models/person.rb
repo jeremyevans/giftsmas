@@ -2,6 +2,7 @@ class Person < Sequel::Model
   @scaffold_fields = [:name]
   @scaffold_session_value = :user_id
   @scaffold_associations = [:sender_events, :receiver_events, :gifts_sent, :gifts_received]
+  @scaffold_order = [:name]
 
   many_to_many :sender_events, :class=>:Event, :join_table=>:event_senders, :right_key=>:event_id, :order=>:name
   many_to_many :receiver_events, :class=>:Event, :join_table=>:event_receivers, :right_key=>:event_id, :order=>:name

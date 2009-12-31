@@ -2,10 +2,12 @@ class Gift < Sequel::Model
   @scaffold_fields = [:name]
   @scaffold_associations = [:receivers, :senders]
   @scaffold_session_value = :event_id
+  @scaffold_order = [:name]
   many_to_many :senders, :class=>:Person, :join_table=>:gift_senders, :right_key=>:person_id, :order=>:name
   many_to_many :receivers, :class=>:Person, :join_table=>:gift_receivers, :right_key=>:person_id, :order=>:name
 
   def self.add(event, gift_name, senders, receivers, new_senders, new_receivers)
+    return if gift_name.empty?
     user = event.user
     gift_senders = senders.map{|i| Person.for_user_by_id(user, i)}
     gift_receivers = receivers.map{|i| Person.for_user_by_id(user, i)}

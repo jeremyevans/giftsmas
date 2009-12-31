@@ -4,16 +4,22 @@ Giftsmas is a website that is useful for keeping track of gifts people
 received.  It is designed around a moderate size family keeping track of all
 gifts that any member of the family received for Christmas.
 
+== Demo
+
+If you just want to play around with a demo, go to http://giftsmas.heroku.com
+and login with demo/demo.  The demo isn't fully functional, but most things
+work.
+
 == Prerequisites for general use
 
 * ruby
 * rubygems
 * postgresql
 * ruby-pg, ruby-postgres, or postgres-pr
-* sinatra (0.3.1)
-* sequel (git HEAD)
-* sequel_postgresql_triggers (1.0.1, from github)
-* scaffolding_extensions (1.3.1)
+* sinatra (0.9.4)
+* sequel (3.7.0)
+* sequel_postgresql_triggers (1.0.2)
+* scaffolding_extensions (1.3.11)
 
 == Command line setup
 
@@ -33,26 +39,25 @@ Create your user(s):
 
 Modify the configuration for the server, if necessary:
 
-  cp config.rb.example config.rb
-  $EDITOR config.rb 
+  $EDITOR config.ru 
 
 Start the server:
 
-  ruby giftsmas.rb
+  rackup
   
 == The web interface
 
-Giftsmas, like Sinatra, runs on port 4567 by default (you can modify this in
-config.rb with the :port option to set).  So open up your webbrowser:
+Giftsmas, when run with rackup, runs on port 9292 by default (you can modify this in
+config.ru).  So open up your webbrowser:
 
-  $BROWSER http://localhost:4567
+  $BROWSER http://localhost:9292
   
 It will redirect you to the login page.  Put in a username and password that
 you created earlier and click "Login".  It will ask you to create an event.
 Choose an event name and click "Create New Event".  It will put you on the add
 gift page.  Put in a gift name, sender name(s), and receiver name(s) and click
 "Add Gift".  It will add the gift to the database and put you back at the add
-gift page, but this time you'll have select boxes for the senders and receivers
+gift page, but this time you'll have checkboxes for the senders and receivers
 you entered.  If you want to use a sender or receiver that's not in one of
 the select boxes, type the name in (you can separate names with a comma).  This
 is true even if you want to use a sender that isn't in the sender select box
@@ -76,12 +81,15 @@ create duplicates).
 * In Chronological Order: Simple report listing all gifts received in
   chronological order.
 * By Receiver: Gives separate reports for each receiver.  When printing the
-  reports, uses one page per receiver, good for writing thank you notes.
+  reports, uses one page per receiver.
 * By Sender: Similar to By Receiver, but for senders.
 * Summary: Shows the total number of gifts, as well as totals by sender
   and receiver.
 * Summary Crosstab: Shows for each sender/receiver pair, how many gifts the
   sender gave the receiver.
+* Thank You Notes: Gives separate reports for each receiver, showing gifts
+  received from people who weren't receivers at the event.  When printing
+  the reports, uses one page per receiver.
   
 === Other
 
@@ -115,14 +123,6 @@ The specs are run with rake:
 The integration specs test the full stack, setting up a web server, having
 a net/http web client access the web server, and making sure that it is
 displaying information correctly and updating the database correctly.
-
-== Todo
-
-* Secure session support (currently, uses sinatra's default session support,
-  which is not secure).
-* Better visual design? (Any volunteers?)
-* More descriptive error messages for when you do something like try to
-  create a gift or event with a 0 length name.
 
 == License
 

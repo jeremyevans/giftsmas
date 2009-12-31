@@ -195,6 +195,17 @@ context "Giftsmas" do
     as.mapit.should == ["Giftsmas", "Associate Receivers", "Associate Senders", "Change Event", "In Chronological Order", "By Receiver", "By Sender", "Summary", "Summary Crosstab", "Thank You Notes", "Manage Events", "Manage Gifts", "Manage People"]
   end
 
+  specify "/add_gift should not add gifts without a sender, receiver, and a name" do
+    session = sign_in('jeremy')
+    Gift.count.should == 0
+    post('/add_gift', :session=>session, 'gift'=>'', 'new_senders'=>'Person1', 'new_receivers'=>'Person2')['Location'].should == '/'
+    Gift.count.should == 0
+    post('/add_gift', :session=>session, 'gift'=>'Gift1', 'new_senders'=>'', 'new_receivers'=>'Person2')['Location'].should == '/'
+    Gift.count.should == 0
+    post('/add_gift', :session=>session, 'gift'=>'Gift1', 'new_senders'=>'Person1', 'new_receivers'=>'')['Location'].should == '/'
+    Gift.count.should == 0
+  end
+
   specify "/add_gift should add gifts correctly" do
     session = sign_in('jeremy')
     Gift.count.should == 0
@@ -213,31 +224,22 @@ context "Giftsmas" do
     form[:action].should == '/add_gift'
     form[:method].should == 'post'
     inputs = form/:input
-    inputs.mapname.should == ['gift', 'new_senders', 'new_receivers', nil]
-    inputs.mapinputtype.should == %w'text text text submit'
-    selects = form/:select
-    selects.mapname.should == %w'senders receivers'
-    selects.mapmultiple.should == %w'multiple multiple'
     p1id = Person[:name=>'Person1'].id.to_s
     p2id = Person[:name=>'Person2'].id.to_s
-    (selects.first/:option).mapit.should == ['Person1']
-    (selects.first/:option).mapvalue.should == [p1id]
-    (selects.last/:option).mapit.should == ['Person2']
-    (selects.last/:option).mapvalue.should == [p2id]
-    post('/add_gift', :session=>session, 'gift'=>'Gift2', 'new_senders'=>'Person3,Person4', 'new_receivers'=>'Person5, Person6', 'senders'=>p1id, 'receivers'=>p2id)['Location'].should == '/'
+    inputs.mapname.should == ['gift', "senders[#{p1id}]", "receivers[#{p2id}]", 'new_senders', 'new_receivers', nil]
+    inputs.mapinputtype.should == %w'text checkbox checkbox text text submit'
+    post('/add_gift', :session=>session, 'gift'=>'Gift2', 'new_senders'=>'Person3,Person4', 'new_receivers'=>'Person5, Person6', "senders[#{p1id}]"=>p1id, "receivers[#{p2id}]"=>p2id)['Location'].should == '/'
 
-    c = content('/', :session=>session)
     Gift.count.should == 2
     gift = Gift[:name=>'Gift2']
     gift.name.should == 'Gift2'
     gift.senders.map{|x| x.name}.should == %w'Person1 Person3 Person4'
     gift.receivers.map{|x| x.name}.should == %w'Person2 Person5 Person6'
-    selects = c/:select
     pids = Person.order(:name).map(:id).map{|x| x.to_s}
-    (selects.first/:option).mapit.should == %w'Person1 Person3 Person4'
-    (selects.first/:option).mapvalue.should == pids[0..0] + pids[2..3]
-    (selects.last/:option).mapit.should == %w'Person2 Person5 Person6'
-    (selects.last/:option).mapvalue.should == pids[1..1] + pids[4..5]
+    content('/', :session=>session)
+    inputs = content('/', :session=>session)/:form/:input
+    inputs.mapname.should == ['gift', "senders[#{pids[0]}]", "senders[#{pids[2]}]", "senders[#{pids[3]}]", "receivers[#{pids[1]}]", "receivers[#{pids[4]}]", "receivers[#{pids[5]}]", 'new_senders', 'new_receivers', nil]
+    inputs.mapinputtype.should == %w'text checkbox checkbox checkbox checkbox checkbox checkbox text text submit'
   end
 
   specify "/choose_event should change the current event" do
