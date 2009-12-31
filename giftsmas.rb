@@ -18,7 +18,6 @@ end
 
 class Sinatra::Base
   set(:appfile=>'giftsmas.rb', :views=>'views')
-  enable :static
   disable :run
   use Rack::Session::Cookie, :secret=>SECRET
 
@@ -148,7 +147,19 @@ class GiftsmasSE < Sinatra::Base
   scaffold_all_models :only=>[Event, Gift, Person]
 end
 
+class FileServer
+  def initialize(app, root)
+    @app = app
+    @rfile = Rack::File.new(root)
+  end
+  def call(env)
+    res = @rfile.call(env)
+    res[0] == 200 ? res : @app.call(env)
+  end
+end
+
 GiftsmasApp = Rack::Builder.app do
+  use FileServer, 'public'
   map "/" do
     run Giftsmas
   end
