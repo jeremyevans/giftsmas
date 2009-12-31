@@ -1,2 +1,3 @@
 scaffolding_extensions
 sequel --version '>= 3.7.0'
+sequel_postgresql_triggers
