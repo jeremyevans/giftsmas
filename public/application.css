@@ -76,6 +76,10 @@ input, select, table, textarea {
 	  border-color: #F00;
 }
 
+input[type~="checkbox"] {
+    border-style: none; 
+}
+
 input[type~="submit"], input[type~="reset"] {
 	font-size: 14px;
 	font-weight: bold;
