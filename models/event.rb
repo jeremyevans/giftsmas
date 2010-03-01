@@ -33,7 +33,7 @@ class Event < Sequel::Model
       join(:gift_receivers, :gift_id=>:id).
       join(:gift_senders, :gift_id=>:gifts__id).
       join(:people.as(:sender), :id=>:person_id).
-      select(:sender__name.as(:sender_name), *person_names.sort.map{|k,v| :sum[{k=>1}.case(0, :gift_receivers__person_id)].as(v)}).
+      select(:sender__name.as(:sender_name), *person_names.sort.map{|k,v| :sum.sql_function({k=>1}.case(0, :gift_receivers__person_id)).as(v)}).
       group_by(:sender__name).
       order(:sender_name).map{|r| [r[:sender_name]] + person_name_values.map{|x| r[x]}}
     [person_name_values, rows]
