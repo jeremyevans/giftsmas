@@ -25,9 +25,9 @@ class Event < Sequel::Model
   end
 
   def gifts_crosstab
-    person_ids = model.db[:gifts].join(:gift_receivers, :gift_id=>:id).filter(:event_id=>id).select(:person_id).distinct(:person_id).order(:person_id).map(:person_id)
-    person_names = model.db[:people].filter(:id=>person_ids).map{|person| [person[:id], person[:name]]}
-    person_name_values = person_names.map{|x| x.last.to_sym}.sort_by{|x| x.to_s}
+    person_ids = model.db[:gifts].join(:gift_receivers, :gift_id=>:id).filter(:event_id=>id).distinct.select_order_map(:person_id)
+    person_names = model.db[:people].filter(:id=>person_ids).order(:name).map{|x| [x[:id], x[:name]]}
+    person_name_values = person_names.map{|x| x.last.to_sym}
     rows = model.db[:gifts].
       filter(:event_id=>id).
       join(:gift_receivers, :gift_id=>:id).
