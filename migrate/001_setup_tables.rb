@@ -60,7 +60,7 @@ class SetupTables < Sequel::Migration
       index [:event_id, :person_id], :unique=>true
     end
     
-    create_language(:plpgsql)
+    create_language(:plpgsql) if server_version < 90000
     create_function(:check_event_person, <<-SQL, :returns=>:trigger, :language=>:plpgsql)
     DECLARE
         check_event_user_id INTEGER;
@@ -109,6 +109,6 @@ class SetupTables < Sequel::Migration
     drop_function(:immutable_event_id)
     drop_function(:cc_event_num_gifts)
     drop_function(:inserted_at)
-    drop_language(:plpgsql)
+    drop_language(:plpgsql) if server_version < 90000
   end
 end
