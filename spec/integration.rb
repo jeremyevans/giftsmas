@@ -101,6 +101,14 @@ class Spec::Example::ExampleGroup
     User.create(:name=>name, :password=>'valid')
   end
 
+  def location(*args)
+    get(*args)['Location'].sub("http://#{HOST}:#{PORT}", '')
+  end
+
+  def post_location(*args)
+    post(*args)['Location'].sub("http://#{HOST}:#{PORT}", '')
+  end
+
   def sign_in(user)
     create_user(user)
     session = SpecSession.new
@@ -134,9 +142,9 @@ context "Giftsmas" do
   end
 
   specify "should redirect all pages except /login and /logout to /login if the user hasn't logged in" do
-    get('/')['Location'].should == '/login'
-    get('/choose_event')['Location'].should == '/login'
-    get('/manage')['Location'].should == '/login'
+    location('/').should == '/login'
+    location('/choose_event').should == '/login'
+    location('/manage').should == '/login'
   end
 
   specify "/login should render the login page" do
@@ -159,9 +167,9 @@ context "Giftsmas" do
   specify "should handle the login process: /login->/choose_event->/" do
     create_user('jeremy')
     session = SpecSession.new
-    get('/', :session=>session)['Location'].should == '/login'
+    location('/', :session=>session).should == '/login'
     content('/login', :title=>'Login')
-    post('/login', :session=>session, 'user'=>'jeremy', 'password'=>'valid')['Location'].should == '/choose_event'
+    post_location('/login', :session=>session, 'user'=>'jeremy', 'password'=>'valid').should == '/choose_event'
 
     p = page('/choose_event', :session=>session)
     p.titleh.should == "Giftsmas - Create Your Event"
@@ -175,7 +183,7 @@ context "Giftsmas" do
     inputs = form/:input
     inputs.mapname.should == ['name', nil]
     inputs.mapinputtype.should == %w'text submit'
-    post('/add_event', :session=>session, inputs.first[:name]=>'Christmas')['Location'].should == '/'
+    post_location('/add_event', :session=>session, inputs.first[:name]=>'Christmas').should == '/'
 
     p = page('/', :session=>session)
     c = p.at("div#content")
@@ -198,18 +206,18 @@ context "Giftsmas" do
   specify "/add_gift should not add gifts without a sender, receiver, and a name" do
     session = sign_in('jeremy')
     Gift.count.should == 0
-    post('/add_gift', :session=>session, 'gift'=>'', 'new_senders'=>'Person1', 'new_receivers'=>'Person2')['Location'].should == '/'
+    post_location('/add_gift', :session=>session, 'gift'=>'', 'new_senders'=>'Person1', 'new_receivers'=>'Person2').should == '/'
     Gift.count.should == 0
-    post('/add_gift', :session=>session, 'gift'=>'Gift1', 'new_senders'=>'', 'new_receivers'=>'Person2')['Location'].should == '/'
+    post_location('/add_gift', :session=>session, 'gift'=>'Gift1', 'new_senders'=>'', 'new_receivers'=>'Person2').should == '/'
     Gift.count.should == 0
-    post('/add_gift', :session=>session, 'gift'=>'Gift1', 'new_senders'=>'Person1', 'new_receivers'=>'')['Location'].should == '/'
+    post_location('/add_gift', :session=>session, 'gift'=>'Gift1', 'new_senders'=>'Person1', 'new_receivers'=>'').should == '/'
     Gift.count.should == 0
   end
 
   specify "/add_gift should add gifts correctly" do
     session = sign_in('jeremy')
     Gift.count.should == 0
-    post('/add_gift', :session=>session, 'gift'=>'Gift1', 'new_senders'=>'Person1', 'new_receivers'=>'Person2')['Location'].should == '/'
+    post_location('/add_gift', :session=>session, 'gift'=>'Gift1', 'new_senders'=>'Person1', 'new_receivers'=>'Person2').should == '/'
     Gift.count.should == 1
     gift = Gift.first
     gift.name.should == 'Gift1'
@@ -228,7 +236,7 @@ context "Giftsmas" do
     p2id = Person[:name=>'Person2'].id.to_s
     inputs.mapname.should == ['gift', "senders[#{p1id}]", "receivers[#{p2id}]", 'new_senders', 'new_receivers', nil]
     inputs.mapinputtype.should == %w'text checkbox checkbox text text submit'
-    post('/add_gift', :session=>session, 'gift'=>'Gift2', 'new_senders'=>'Person3,Person4', 'new_receivers'=>'Person5, Person6', "senders[#{p1id}]"=>p1id, "receivers[#{p2id}]"=>p2id)['Location'].should == '/'
+    post_location('/add_gift', :session=>session, 'gift'=>'Gift2', 'new_senders'=>'Person3,Person4', 'new_receivers'=>'Person5, Person6', "senders[#{p1id}]"=>p1id, "receivers[#{p2id}]"=>p2id).should == '/'
 
     Gift.count.should == 2
     gift = Gift[:name=>'Gift2']
@@ -259,14 +267,14 @@ context "Giftsmas" do
     inputs = form/:input
     inputs.mapname.should == [nil]
     inputs.mapinputtype.should == %w'submit'
-    post('/choose_event', :session=>session, 'event_id'=>e2.id.to_s)['Location'].should == '/'
+    post_location('/choose_event', :session=>session, 'event_id'=>e2.id.to_s).should == '/'
     page('/', :session=>session).at("#nav h4").it.should == "Event: Birthday"
   end
 
   specify "/logout should log the user out" do
     session = sign_in('jeremy')
-    post('/logout', :session=>session)['Location'].should == '/login'
-    get('/')['Location'].should == '/login'
+    post_location('/logout', :session=>session).should == '/login'
+    location('/').should == '/login'
   end
 
   specify "scaffolded forms should be available" do
