@@ -6,7 +6,7 @@
   <thead><tr><th>Time</th><th>Gift</th><th>Receivers</th><th>Other Senders</th></tr></thead>
   <tbody>
   <% gifts.each do |g| %>
-    <tr><td><%= g.inserted_at.strftime('%I:%M:%S%P') %></td>
+    <tr><td><%= g.inserted_at.strftime('%I:%M:%S%p') %></td>
     <td><%=h g.name %></td>
     <td><%= (g.receivers.map{|x| h(x.name)}).join(', ') %></td>
     <td><%= (g.senders.map{|x| h(x.name)} - [h(s)]).join(', ') %></td></tr>
