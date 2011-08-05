@@ -12,5 +12,7 @@ begin
 rescue LoadError
   DB = Sequel.connect(ENV['DATABASE_URL'] || "postgres:///giftsmas#{'_test' if GIFTSMAS_ENV != :production}")
 end
+Sequel::Model.plugin :prepared_statements
+Sequel::Model.plugin :prepared_statements_associations
 
 %w'user event person gift'.each{|x| require "models/#{x}"}
