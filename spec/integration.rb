@@ -2,6 +2,7 @@ require 'rubygems'
 require 'hpricot'
 require 'net/http'
 GIFTSMAS_ENV = :test
+$: << File.dirname(File.dirname(__FILE__))
 require 'models'
 
 HOST = 'localhost'

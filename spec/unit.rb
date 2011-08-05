@@ -1,5 +1,6 @@
 #!/usr/local/bin/spec
 GIFTSMAS_ENV = :test
+$: << File.dirname(File.dirname(__FILE__))
 require 'models'
 
 class Spec::Example::ExampleGroup
