@@ -15,10 +15,10 @@ desc "Run integration tests"
 task :integration do
   ENV['GIFTSMAS_TEST'] = '1'
   sh %{echo > spec/unicorn.log}
-  sh %{#{RUBY} -S unicorn -c spec/unicorn.conf -D}
+  sh %{#{FileUtils::RUBY} -S unicorn -c spec/unicorn.conf -D}
   begin
     sleep 1
-    sh %{#{RUBY} -S spec spec/integration.rb}
+    sh %{#{FileUtils::RUBY} -S spec spec/integration.rb}
   ensure
     sh %{kill `cat spec/unicorn.pid`}
   end
