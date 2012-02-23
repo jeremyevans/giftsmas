@@ -28,4 +28,12 @@ class Gift < Sequel::Model
       end
     end
   end
+
+  def self.recent(event, limit)
+    where(:event_id=>event.id).
+      order(:inserted_at.desc).
+      limit(limit).
+      eager(:senders, :receivers).
+      all
+  end
 end

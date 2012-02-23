@@ -245,10 +245,14 @@ context "Giftsmas" do
     gift.senders.map{|x| x.name}.should == %w'Person1 Person3 Person4'
     gift.receivers.map{|x| x.name}.should == %w'Person2 Person5 Person6'
     pids = Person.order(:name).map(:id).map{|x| x.to_s}
-    content('/', :session=>session)
-    inputs = content('/', :session=>session)/:form/:input
+    c = content('/', :session=>session)
+    inputs = c/:form/:input
     inputs.mapname.should == ['gift', "senders[#{pids[0]}]", "senders[#{pids[2]}]", "senders[#{pids[3]}]", "receivers[#{pids[1]}]", "receivers[#{pids[4]}]", "receivers[#{pids[5]}]", 'new_senders', 'new_receivers', nil]
     inputs.mapinputtype.should == %w'text checkbox checkbox checkbox checkbox checkbox checkbox text text submit'
+
+    recent = c/:li/:a
+    recent.maphr.should == Gift.order(:inserted_at.desc).select_map(:id).map{|i| ["/manage/edit_gift/#{i}", "/manage/edit_gift_senders/#{i}", "/manage/edit_gift_receivers/#{i}"]}.flatten
+    recent.mapit.should == ["Gift2", "Person1, Person3, Person4", "Person2, Person5, Person6", "Gift1", "Person1", "Person2"]
   end
 
   specify "/choose_event should change the current event" do

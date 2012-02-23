@@ -63,6 +63,7 @@ end
 
 class Giftsmas < Sinatra::Base
   get '/' do
+    @recent_gifts = Gift.recent(@event, 5)
     render :erb, :index
   end
   

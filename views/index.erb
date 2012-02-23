@@ -19,3 +19,15 @@ unless x.empty? %>
   <input id="add_gift_button" type="submit" value="Add Gift" />
 </div>
 </form>
+
+<% unless @recent_gifts.empty? %>
+<h2>Recent Gifts</h2>
+<ul>
+  <% @recent_gifts.each do |g| %>
+  <li><a href="/manage/edit_gift/<%= g.id %>"><%=h g.name %></a> (
+   Senders: <a href="/manage/edit_gift_senders/<%= g.id %>"><%=h g.senders.map{|s| s.name}.sort.join(', ')%></a> | 
+   Receivers: <a href="/manage/edit_gift_receivers/<%= g.id %>"><%=h g.receivers.map{|s| s.name}.sort.join(', ')%></a>
+  )</li>
+  <% end %>
+</ul>
+<% end %>
