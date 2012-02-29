@@ -1,5 +1,5 @@
 pg
 scaffolding_extensions
-sequel --version '>= 3.20.0'
+sequel --version '>= 3.32.0'
 sequel_postgresql_triggers
 sinatra
