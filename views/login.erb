@@ -1,7 +1,21 @@
 <% @title = 'Login' %>
 
-<form method='post' action='/login'>
-User: <input type="text" name="user" /><br />
-Password: <input type="password" name="password" /><br />
-<input type="submit" value="Login" />
+<form action="/login" class="form-horizontal" method="post">
+  <fieldset>
+    <div class="control-group">
+      <label class="control-label" for="user">User</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" name="user" id="user"/>
+      </div>
+    </div>
+    <div class="control-group">
+      <label class="control-label" for="password">Password</label>
+      <div class="controls">
+        <input type="password" class="input-xlarge" name="password" id="password"/>
+      </div>
+    </div>
+    <div class="form-actions">
+      <input type="submit" class="btn-large" value="Login"/>
+    </div>
+  </fieldset>
 </form>

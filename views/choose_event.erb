@@ -1,15 +1,33 @@
 <% @title = "#{@user.events.empty? ? 'Create' : 'Choose'} Your Event" %>
 
 <% unless @user.events.empty? %>
-  <h2>Choose an Existing Event</h2>
-  <form action="/choose_event" method="post">
-    Event: <%= model_select(:event_id, @user.events) %><br />
-    <input type="submit" value="Choose Event" />
+  <form action="/choose_event" class="form-horizontal" method="post">
+    <fieldset>
+      <legend>Choose an Existing Event</legend>
+      <div class="control-group">
+        <label class="control-label" for="event_id">Event</label>
+        <div class="controls">
+          <%= model_select(:event_id, @user.events) %>
+        </div>
+      </div>
+      <div class="form-actions">
+        <input type="submit" class="btn-large" value="Choose Event"/>
+      </div>
+    </fieldset>
   </form>
-  <h2>Create a New Event</h2>
 <% end %>
 
-<form action="/add_event" method="post">
-  Name: <input type="text" name="name" /><br />
-  <input type="submit" value="Create New Event" />
+<form action="/add_event" class="form-horizontal" method="post">
+  <fieldset>
+    <legend>Create a New Event</legend>
+    <div class="control-group">
+      <label class="control-label" for="name">User</label>
+      <div class="controls">
+        <input type="text" class="input-xlarge" name="name" id="name"/>
+      </div>
+    </div>
+    <div class="form-actions">
+      <input type="submit" class="btn-large" value="Create New Event"/>
+    </div>
+  </fieldset>
 </form>

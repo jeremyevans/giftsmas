@@ -159,7 +159,7 @@ context "Giftsmas" do
     inputs = form/:input
     inputs.mapname.should == ['user', 'password', nil]
     inputs.mapinputtype.should == %w'text password submit'
-    n = p.at("div#nav")
+    n = p.at("div.navbar")
     as = n/:a
     as.maphr.should == %w'/'
     as.mapit.should == %w'Giftsmas'
@@ -196,12 +196,11 @@ context "Giftsmas" do
     inputs = form/:input
     inputs.mapname.should == ['gift', 'new_senders', 'new_receivers', nil]
     inputs.mapinputtype.should == %w'text text text submit'
-    n = p.at("div#nav")
-    (n/:h4).mapih.should == ['Event: Christmas', 'Gift Reports', 'Other']
-    as = n/:a
+    n = p.at("div.navbar")
     eid = Event.first.id
-    as.maphr.should == ["/", "/manage/edit_event_receivers/#{eid}", "/manage/edit_event_senders/#{eid}", "/choose_event", "/reports/chronological", "/reports/by_receiver", "/reports/by_sender", "/reports/summary", "/reports/crosstab", "/reports/thank_yous", "/manage/manage_event", "/manage/manage_gift", "/manage/manage_person"]
-    as.mapit.should == ["Giftsmas", "Associate Receivers", "Associate Senders", "Change Event", "In Chronological Order", "By Receiver", "By Sender", "Summary", "Summary Crosstab", "Thank You Notes", "Manage Events", "Manage Gifts", "Manage People"]
+    as = n/:a
+    as.mapih.should == ['Giftsmas: Christmas', 'Associate Receivers', 'Associate Senders', 'Reports', 'Change Event', 'Manage']
+    as.maphr.should == ["/", "/manage/edit_event_receivers/#{eid}", "/manage/edit_event_senders/#{eid}", "/reports", "/choose_event", "/manage"]
   end
 
   specify "/add_gift should not add gifts without a sender, receiver, and a name" do
@@ -226,7 +225,7 @@ context "Giftsmas" do
     gift.receivers.map{|x| x.name}.should == %w'Person2'
 
     c = content('/', :title=>'Add Gift', :session=>session)
-    (c/:h4).mapih.should == ['Gift Added: Gift1<br />Senders: Person1<br />Receivers: Person2']
+    (c/"div.alert").mapih.should == ['Gift Added: Gift1<br />Senders: Person1<br />Receivers: Person2']
     forms = c/:form
     forms.length.should == 1
     form = forms.first
@@ -250,7 +249,7 @@ context "Giftsmas" do
     inputs.mapname.should == ['gift', "senders[#{pids[0]}]", "senders[#{pids[2]}]", "senders[#{pids[3]}]", "receivers[#{pids[1]}]", "receivers[#{pids[4]}]", "receivers[#{pids[5]}]", 'new_senders', 'new_receivers', nil]
     inputs.mapinputtype.should == %w'text checkbox checkbox checkbox checkbox checkbox checkbox text text submit'
 
-    recent = c/:li/:a
+    recent = c/:td/:a
     recent.maphr.should == Gift.order(:inserted_at.desc).select_map(:id).map{|i| ["/manage/edit_gift/#{i}", "/manage/edit_gift_senders/#{i}", "/manage/edit_gift_receivers/#{i}"]}.flatten
     recent.mapit.should == ["Gift2", "Person1, Person3, Person4", "Person2, Person5, Person6", "Gift1", "Person1", "Person2"]
   end
@@ -260,7 +259,7 @@ context "Giftsmas" do
     e1 = Event.first
     e2 = Event.create(:user_id=>User.first.id, :name=>'Birthday')
     c = content('/choose_event', :title=>'Choose Your Event', :session=>session)
-    (c/:h2).mapit.should == ['Choose an Existing Event', 'Create a New Event']
+    (c/:legend).mapit.should == ['Choose an Existing Event', 'Create a New Event']
     forms = c/:form
     forms.mapaction.should == %w'/choose_event /add_event'
     forms.mapmethod.should == %w'post post'
@@ -273,7 +272,7 @@ context "Giftsmas" do
     inputs.mapname.should == [nil]
     inputs.mapinputtype.should == %w'submit'
     post_location('/choose_event', :session=>session, 'event_id'=>e2.id.to_s).should == '/'
-    page('/', :session=>session).at("#nav h4").it.should == "Event: Birthday"
+    page('/', :session=>session).at("div.navbar a").it.should == "Giftsmas: Birthday"
   end
 
   specify "/logout should log the user out" do

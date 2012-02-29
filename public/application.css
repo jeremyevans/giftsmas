@@ -1,144 +1,42 @@
-/*all*/
-/*topbottom leftright*/
-/*top leftright bottom*/
-/*top right bottom left*/
+div.navbar-inner {background-color: #141; background-image: none; filter: none; }
 
 a { color: #FFF}
 a:link { color: #FFF}
 a:visited { color: #555}
 a:hover { color: #C00}
 
-a#banner {
-	text-align: center;
-	font-size: 18px;
-	font-weight: bolder;
-	font-variant: small-caps;
-	margin: 5px;
-	padding: 2px;
-	border-width: 2px;
-	border-color: #F00;
-	border-style: solid;
-	font-family: serif;
-	color: #C00;
-	background-color: #0A0;
-	text-decoration: none;
-}
-
 body { 
-	background-color: #3C6;
-	color: #900;	
-	font-family: arial, helvetica, sans-serif, verdana;
-	font-size: 14px;
-	margin: 0px;
-	padding: 10px;
+	background-color: #cdc;
+	color: #600;	
+}
+h1, h2, h3, h4, label {
+  color: inherit;
+}
+.navbar .brand { color: #c00;}
+div.form-actions {
+  background-color: inherit;
+  border-top-width: 0;
+  padding-top: 0;
+}
+legend { margin-bottom: 0; }
+
+div.giftpeople input, div.giftpeople label {
+  display: inline;
+}
+table#recent_gifts a {
+  color: #600;
 }
 
-div { 
-	border-width: 0;
-	margin: 0;
-	padding: 0;
-}
-div#content {
-	margin: 10px 10px 0 220px;
-	padding: 0 25px 0 5px;
-	width: auto;
-}
-div#nav {
-	padding: 10px;
-	position: absolute;
-	top: 0;
-	left: 0;
-	width: 210px;
-}
-div#nav a {	display: block; }
-
-div.giftpeople {
-  float: left;
-  margin: 1em;
-}
-div.giftpeople select { display: block; }
-
-h1, h2, h3, h4 {
-	font-size: 20px;
-	font-weight: bold;
-	margin: 10px 0px;
+input, select, textarea { 
+    width: auto;
 }
 
-h2 { font-size: 18px; }
-h3 { font-size: 16px; }
-h4 { font-size: 14px; }
-
-input, select, table, textarea { 
-    border-style: solid; 
-    border-width: 1px;
-    padding: 2px;
-    margin: 5px 8px 0;
-	  border-color: #F00;
-}
-
-input[type~="checkbox"] {
-    border-style: none; 
-}
-
-input[type~="submit"], input[type~="reset"] {
-	font-size: 14px;
-	font-weight: bold;
-	color: #C00;
-	background-color: #0A0;
-	border-color: #F00;
-}
-
-input#add_gift_button {
-  display: block;
-  clear: both;
-}
-
-li { padding: 2px; }
-ul, p { padding: 0px 10px; }
-
-select {
-	padding: 1px;
-	margin: 0px 5px;
-	border-width: 1px;
-}
-
-table {
-	margin: 10px;
-	border-collapse: collapse;
-	font-family: inherit;
-	font-size: inherit;
-	empty-cells: show;
-	text-align: center;
-}
-
-table caption {
-  font-size: 16px;
-  font-weight: bold;
-}
-
-th, td, tbody, thead, tr 
-{  
-    border-width: inherit;
-    border-style: inherit;
-    padding: inherit;
-}
 table.formtable td.attribute { text-align: right; }
-td.info { 
-    vertical-align: top;
-    text-align: left;
-}
-td.name { text-align: left; }
-td.atv { 
-    font-size: 20px; 
-    font-weight: bold; 
-}
-
-.centered { text-align: center; }
 
 ul.scaffold_associated_records_list li form { display: inline; }
 
 @media print {
-    div#nav { display: none; }
+    div.navbar { display: none; }
     div#content {
         position: static;
         width: 99%;

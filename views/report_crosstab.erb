@@ -1,6 +1,6 @@
 <% @title = 'Gift Summary Crosstab' %>
 
-<table>
+<table class="table table-condensed table-bordered table-striped">
 <thead><tr><th>Sender\Receiver</th>
 <% @headers.each do |x| %>
   <th><%=h x.to_s %></th>

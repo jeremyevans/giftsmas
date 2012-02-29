@@ -42,7 +42,7 @@ class Sinatra::Base
     e = request.env['sinatra.error']
     puts e.message
     e.backtrace.each{|x| puts x}
-    render(:erb, "<h3>Oops, an error occurred.</h3>")
+    render(:erb, "<h3>Oops, an error occurred.</h3>", :layout=>:layout)
   end
   
   not_found do
@@ -78,6 +78,10 @@ class Giftsmas < Sinatra::Base
       "Gift Not Added: You must specify a name and at least one sender and receiver."
     end
     redirect('/', 303)
+  end
+  
+  get '/reports' do
+    render :erb, :reports
   end
   
   get '/reports/chronological' do
@@ -152,6 +156,9 @@ class Giftsmas < Sinatra::Base
 end
 
 class GiftsmasSE < Sinatra::Base
+  get %r{\A/(index/*)?\z} do
+    render :erb, :manage
+  end
   scaffold_all_models :only=>[Event, Gift, Person]
 end
 

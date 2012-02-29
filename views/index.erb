@@ -1,33 +1,60 @@
 <% @title = 'Add Gift' %>
 
-<form method='post' action='/add_gift'>
-Gift: <input type="text" id="gift" name="gift" size="60" /><br />
+<form method='post' action='/add_gift' class="form-horizontal">
+  <fieldset>
+    <div class="control-group">
+      <label class="control-label" for="gift">Gift</label>
+      <div class="controls">
+        <input type="text" name="gift" id="gift" size="60" /><br />
+      </div>
+    </div>
+  </fieldset>
 
-<% [:senders, :receivers].each do |sr|
-x = @event.send(sr)
-unless x.empty? %>
-  <div class="giftpeople">
-    <%= sr.to_s.capitalize %>:<br />
-    <% x.each do |p| %>
-      <input type="checkbox" id="<%= sr %>_<%= p.id %>" name="<%= sr %>[<%= p.id %>]" value="<%= p.id %>" /> <label for="<%= sr %>_<%= p.id %>"><%= p.name %></label><br />
-    <% end %>
+  <div class="row">
+    <% [:senders, :receivers].each do |sr|
+    x = @event.send(sr)
+    unless x.empty? %>
+      <div class="span2 giftpeople">
+        <%= sr.to_s.capitalize %>:<br />
+        <% x.each do |p| %>
+          <input type="checkbox" id="<%= sr %>_<%= p.id %>" name="<%= sr %>[<%= p.id %>]" value="<%= p.id %>" /> <label for="<%= sr %>_<%= p.id %>"><%= p.name %></label><br />
+        <% end %>
+      </div>
+    <% end end %>
+    <div class="span8">
+      <fieldset>
+        <div class="control-group">
+          <label class="control-label" for="new_senders">New Senders</label>
+          <div class="controls">
+            <input type="text" name="new_senders" id="new_senders" /><br />
+          </div>
+        </div>
+        <div class="control-group">
+          <label class="control-label" for="new_receviers">New Receivers</label>
+          <div class="controls">
+            <input type="text" name="new_receivers" id="new_receivers" /><br />
+          </div>
+        </div>
+        <div class="form-actions">
+          <input type="submit" class="btn-large" value="Add Gift"/>
+        </div>
+      </fieldset>
+
+      <% unless @recent_gifts.empty? %>
+        <table id="recent_gifts" class="table table-condensed">
+        <caption>Recent Gifts</caption>
+        <thead><tr><th>Gift</th><th>Senders</th><th>Receivers</th></tr></thead>
+        <tbody>
+          <% @recent_gifts.each do |g| %>
+          <tr>
+            <td><a href="/manage/edit_gift/<%= g.id %>"><%=h g.name %></a></td>
+            <td><a href="/manage/edit_gift_senders/<%= g.id %>"><%=h g.senders.map{|s| s.name}.sort.join(', ')%></a></td>
+            <td><a href="/manage/edit_gift_receivers/<%= g.id %>"><%=h g.receivers.map{|s| s.name}.sort.join(', ')%></a></td>
+          </tr>
+          <% end %>
+        </tbody></table>
+      <% end %>
+    </div>
   </div>
-<% end end %>
-<div class="giftpeople">
-  New Senders: <input type="text" name="new_senders" /><br />
-  New Receivers: <input type="text" name="new_receivers" /><br />
-  <input id="add_gift_button" type="submit" value="Add Gift" />
-</div>
 </form>
 
-<% unless @recent_gifts.empty? %>
-<h2>Recent Gifts</h2>
-<ul>
-  <% @recent_gifts.each do |g| %>
-  <li><a href="/manage/edit_gift/<%= g.id %>"><%=h g.name %></a> (
-   Senders: <a href="/manage/edit_gift_senders/<%= g.id %>"><%=h g.senders.map{|s| s.name}.sort.join(', ')%></a> | 
-   Receivers: <a href="/manage/edit_gift_receivers/<%= g.id %>"><%=h g.receivers.map{|s| s.name}.sort.join(', ')%></a>
-  )</li>
-  <% end %>
-</ul>
-<% end %>
