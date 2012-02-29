@@ -16,10 +16,10 @@ work.
 * rubygems
 * postgresql
 * ruby-pg, ruby-postgres, or postgres-pr
-* sinatra (0.9.4)
-* sequel (3.7.0)
+* sinatra (1.3.2)
+* sequel (3.32.0)
 * sequel_postgresql_triggers (1.0.2)
-* scaffolding_extensions (1.3.11)
+* scaffolding_extensions (1.5.4)
 
 == Command line setup
 
@@ -34,7 +34,7 @@ Create the db and run the migration:
 
 Create your user(s):
 
-  irb -rmodels
+  irb -I. -rmodels
   irb(main):001:0> User.create(:name=>'...', :password=>'...')
 
 Modify the configuration for the server, if necessary:
@@ -60,9 +60,8 @@ gift page.  Put in a gift name, sender name(s), and receiver name(s) and click
 gift page, but this time you'll have checkboxes for the senders and receivers
 you entered.  If you want to use a sender or receiver that's not in one of
 the select boxes, type the name in (you can separate names with a comma).  This
-is true even if you want to use a sender that isn't in the sender select box
-but is in the receiver select box (you can always type in the names, it doesn't
-create duplicates).
+is true even if you want to use a sender or receiver that doesn't have a
+checkbox (you can always type in the names, it doesn't create duplicates).
 
 == Other pages
 
@@ -76,7 +75,7 @@ create duplicates).
 * Change Event: Change the currently used event, either by picking another
   event or adding a new event.
 
-=== Gift Reports
+=== Reports
 
 * In Chronological Order: Simple report listing all gifts received in
   chronological order.
@@ -104,7 +103,7 @@ of gifts after they have been added, or to delete gifts.
 * rake
 * ruby-style
 * hpricot
-* mongrel
+* unicorn 
 
 === Setup
 
