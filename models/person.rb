@@ -10,7 +10,7 @@ class Person < Sequel::Model
   many_to_many :gifts_received, :class=>:Gift, :join_table=>:gift_receivers, :right_key=>:gift_id, :order=>:inserted_at
 
   def self.for_user_by_id(user, id)
-    first(:user_id=>user.id, :id=>id)
+    first(:user_id=>user.id, :id=>id.to_i)
   end
 
   def self.for_user_by_name(user, name)

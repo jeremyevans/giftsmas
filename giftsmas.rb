@@ -138,7 +138,7 @@ class Giftsmas < Sinatra::Base
   end
   
   post '/choose_event' do
-    e = Event[:user_id=>@user.id, :id=>params[:event_id]]
+    e = Event[:user_id=>@user.id, :id=>params[:event_id].to_i]
     session[:event_id] = e.id
     redirect('/', 303)
   end
