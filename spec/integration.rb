@@ -250,7 +250,7 @@ context "Giftsmas" do
     inputs.mapinputtype.should == %w'text checkbox checkbox checkbox checkbox checkbox checkbox text text submit'
 
     recent = c/:td/:a
-    recent.maphr.should == Gift.order(:inserted_at.desc).select_map(:id).map{|i| ["/manage/edit_gift/#{i}", "/manage/edit_gift_senders/#{i}", "/manage/edit_gift_receivers/#{i}"]}.flatten
+    recent.maphr.should == Gift.reverse_order(:inserted_at).select_map(:id).map{|i| ["/manage/edit_gift/#{i}", "/manage/edit_gift_senders/#{i}", "/manage/edit_gift_receivers/#{i}"]}.flatten
     recent.mapit.should == ["Gift2", "Person1, Person3, Person4", "Person2, Person5, Person6", "Gift1", "Person1", "Person2"]
   end
 

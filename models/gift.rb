@@ -31,7 +31,7 @@ class Gift < Sequel::Model
 
   def self.recent(event, limit)
     where(:event_id=>event.id).
-      order(:inserted_at.desc).
+      reverse_order(:inserted_at).
       limit(limit).
       eager(:senders, :receivers).
       all
