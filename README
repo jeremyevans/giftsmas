@@ -1,14 +1,14 @@
 = Giftsmas
 
-Giftsmas is a website that is useful for keeping track of gifts people
-received.  It is designed around a moderate size family keeping track of all
-gifts that any member of the family received for Christmas.
+Giftsmas is a web application designed for keeping track of gifts people
+receive during an event.  It is designed around a moderate size family
+keeping track of all gifts that any member of the family received for
+Christmas.
 
 == Demo
 
 If you just want to play around with a demo, go to http://giftsmas.heroku.com
-and login with demo/demo.  The demo isn't fully functional, but most things
-work.
+and login with demo/demo.
 
 == Prerequisites for general use
 
@@ -101,7 +101,7 @@ of gifts after they have been added, or to delete gifts.
 === Prerequisites to run the specs
 
 * rake
-* ruby-style
+* rspec 1
 * hpricot
 * unicorn 
 
@@ -116,8 +116,9 @@ Create the db and run the migration:
 
 The specs are run with rake:
 
-  rake # Unit tests
+  rake spec # Unit tests
   rake integration # Integration tests
+  rake # Both
   
 The integration specs test the full stack, setting up a web server, having
 a net/http web client access the web server, and making sure that it is
