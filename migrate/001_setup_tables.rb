@@ -8,7 +8,7 @@ class SetupTables < Sequel::Migration
       char :salt, :null=>false, :size=>40
       char :password, :null=>false, :size=>40
       index :name, :unique=>true
-      check :char_length[:name] > 0
+      check{char_length(:name) > 0}
     end
 
     create_table :events do
@@ -17,7 +17,7 @@ class SetupTables < Sequel::Migration
       integer :num_gifts, :null=>false, :default=>0
       foreign_key :user_id, :users, :null=>false
       index [:name, :user_id], :unique=>true
-      check :char_length[:name] > 0
+      check{char_length(:name) > 0}
     end
 
     create_table :people do
@@ -25,7 +25,7 @@ class SetupTables < Sequel::Migration
       text :name, :null=>false
       foreign_key :user_id, :users, :null=>false
       index [:name, :user_id], :unique=>true
-      check :char_length[:name] > 0
+      check{char_length(:name) > 0}
     end
 
     create_table :gifts do
@@ -33,7 +33,7 @@ class SetupTables < Sequel::Migration
       text :name, :null=>false
       timestamp :inserted_at
       foreign_key :event_id, :events, :null=>false
-      check :char_length[:name] > 0
+      check{char_length(:name) > 0}
     end
 
     create_table :gift_senders do
