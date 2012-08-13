@@ -2,7 +2,7 @@ require "rake"
 require "rake/clean"
 require "spec/rake/spectask"
 
-CLEAN.include ["spec/style.log"]
+CLEAN.include ["spec/unicorn.log"]
 
 task :default=>[:spec, :integration]
 
