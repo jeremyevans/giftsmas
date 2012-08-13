@@ -13,7 +13,7 @@ end
 
 describe Event do
   before do
-    @user = User.create(:name=>'test', :salt=>'', :password=>'')
+    @user = User.create(:name=>'test', :password=>'')
     @event = Event.create(:name=>'Christmas', :user_id=>@user.id)
     @sender = Person.create(:name=>'S', :user_id=>@user.id)
     @receiver = Person.create(:name=>'R', :user_id=>@user.id)
@@ -79,7 +79,7 @@ end
 
 describe Gift do
   before do
-    @user = User.create(:name=>'test', :salt=>'', :password=>'')
+    @user = User.create(:name=>'test', :password_hash=>'')
     @event = Event.create(:name=>'Christmas', :user_id=>@user.id)
     @sender = Person.create(:name=>'S', :user_id=>@user.id)
     @receiver = Person.create(:name=>'R', :user_id=>@user.id)
@@ -121,7 +121,7 @@ end
 
 describe Person do
   before do
-    @user = User.create(:name=>'test', :salt=>'', :password=>'')
+    @user = User.create(:name=>'test', :password_hash=>'')
     @event = Event.create(:name=>'Christmas', :user_id=>@user.id)
     @person = Person.create(:name=>'P', :user_id=>@user.id)
   end
@@ -166,33 +166,33 @@ end
 
 describe User do
   before do
-    @user = User.create(:name=>'test', :salt=>'', :password=>'')
+    @user = User.create(:name=>'test', :password=>'blah')
+  end
+  after do
+    @user.delete
   end
 
   specify "associations should be correct" do
     @user.events.should == []
   end
 
-  specify "#password= should create a new salt" do
-    salt = @user.salt
-    @user.password = 'blah'
-    @user.salt.should_not == salt
-    @user.salt.should =~ /\A[0-9a-zA-Z]{40}\z/
-  end
-
-  specify "#password= should set the SHA1 password hash based on the salt and password" do
-    @user.password = 'blah'
-    @user.password.should == Digest::SHA1.new.update(@user.salt).update('blah').hexdigest
+  specify "#password= should set a new password hash" do
+    pw = @user.password_hash
+    @user.password = 'foo'
+    @user.password_hash.should_not == pw
+    User.login_user_id('test', 'foo').should == nil
+    @user.save
+    User.login_user_id('test', 'foo').should == @user.id
   end
 
   specify ".login_user_id should return nil unless both username and password are present" do
     User.login_user_id(nil, nil).should == nil
-    User.login_user_id('default', nil).should == nil
+    User.login_user_id('test', nil).should == nil
     User.login_user_id(nil, 'blah').should == nil
   end
 
   specify ".login_user_id should return nil unless a user with a given username exists" do
-    User.login_user_id('blah', nil).should == nil
+    User.login_user_id('foo', nil).should == nil
   end
 
   specify ".login_user_id should return nil unless the password matches for that username" do
@@ -200,8 +200,6 @@ describe User do
   end
 
   specify ".login_user_id should return the user's id if the password matches " do
-    @user.password = 'blah'
-    @user.save
     User.login_user_id('test', 'blah').should == @user.id
   end
 end
