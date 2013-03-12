@@ -5,6 +5,7 @@ class Gift < Sequel::Model
   @scaffold_order = [:name]
   many_to_many :senders, :class=>:Person, :join_table=>:gift_senders, :right_key=>:person_id, :order=>:name
   many_to_many :receivers, :class=>:Person, :join_table=>:gift_receivers, :right_key=>:person_id, :order=>:name
+  many_to_one :event
 
   def self.add(event, gift_name, senders, receivers, new_senders, new_receivers)
     return if gift_name.empty?
@@ -31,7 +32,7 @@ class Gift < Sequel::Model
 
   def self.recent(event, limit)
     where(:event_id=>event.id).
-      reverse_order(:inserted_at).
+      reverse_order(:inserted_at, :id).
       limit(limit).
       eager(:senders, :receivers).
       all

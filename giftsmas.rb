@@ -51,9 +51,9 @@ class Sinatra::Base
   
   before do
     @flash = session.delete(:flash)
-    unless %w'/application.css /favicon.ico /login /logout'.include?(request.env['REQUEST_PATH'])
+    unless %w'/application.css /favicon.ico /login /logout'.include?(env['PATH_INFO'])
       redirect('/login', 303) if !session[:user_id] or !(@user = User[session[:user_id]])
-      unless %w'/choose_event /add_event'.include?(request.env['REQUEST_PATH'])
+      unless %w'/choose_event /add_event'.include?(env['PATH_INFO'])
         @event = Event[session[:event_id]] if session[:event_id]
         redirect('/choose_event', 303) unless @event
       end
