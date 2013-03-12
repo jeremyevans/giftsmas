@@ -1,6 +1,7 @@
 <% @title = 'Login' %>
 
 <form action="/login" class="form-horizontal" method="post">
+  <%= Rack::Csrf.tag(env) %>
   <fieldset>
     <div class="control-group">
       <label class="control-label" for="user">User</label>

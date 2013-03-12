@@ -5,13 +5,13 @@ require 'sinatra/base'
 require 'cgi'
 require 'models'
 require 'scaffolding_extensions'
+require 'rack/csrf'
 
 ScaffoldingExtensions::MetaModel::SCAFFOLD_OPTIONS[:text_to_string] = true
 PersonSplitter = /,/ unless defined?(PersonSplitter)
 SECRET_FILE = File.join(File.dirname(__FILE__), 'giftsmas.secret')
 begin
-  File.open(SECRET_FILE, 'wb'){|f| f.write(User.new.send(:new_salt))} unless File.file?(SECRET_FILE)
-  SECRET = File.read(SECRET_FILE)
+  SECRET = File.read(SECRET_FILE) if File.file?(SECRET_FILE)
 rescue
   SECRET = nil
 end
@@ -20,6 +20,7 @@ class Sinatra::Base
   set(:appfile=>'giftsmas.rb', :views=>'views')
   disable :run
   use Rack::Session::Cookie, :secret=>SECRET
+  use Rack::Csrf
 
   def h(text)
     CGI.escapeHTML(text)
@@ -160,6 +161,10 @@ class GiftsmasSE < Sinatra::Base
     render :erb, :manage
   end
   scaffold_all_models :only=>[Event, Gift, Person]
+
+  def scaffold_token_tag
+    Rack::Csrf.tag(env)
+  end
 end
 
 class FileServer

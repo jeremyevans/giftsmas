@@ -3,5 +3,6 @@ scaffolding_extensions
 sequel --version '>= 3.32.0'
 sequel_pg
 sequel_postgresql_triggers
-sinatra
+sinatra --version '< 1.3'
 bcrypt-ruby
+rack_csrf

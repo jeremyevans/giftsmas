@@ -3,8 +3,7 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-<% @title ||= @scaffold_title %>
-<title>Giftsmas<%= " - #{@title}" if @title %></title>
+<title>Giftsmas<%= " - #{@title || @scaffold_title}" if @title || @scaffold_title%></title>
 <link rel="stylesheet" type="text/css" href="/bootstrap.min.css" />
 <link rel="stylesheet" type="text/css" href="/application.css" />
 </head>
@@ -27,7 +26,10 @@
         <% end %>
       </ul>
       <% if @user %>
-        <form action="/logout" class="button_to" method="post"><input class="btn btn-warning pull-right" type="submit" value="Logout" /></form>
+        <form action="/logout" class="button_to" method="post">
+          <%= Rack::Csrf.tag(env) %>
+          <input class="btn btn-warning pull-right" type="submit" value="Logout" />
+        </form>
       <% end %>
     </div>
   </div>
