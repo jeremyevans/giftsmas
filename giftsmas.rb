@@ -10,9 +10,11 @@ require 'rack/csrf'
 ScaffoldingExtensions::MetaModel::SCAFFOLD_OPTIONS[:text_to_string] = true
 PersonSplitter = /,/ unless defined?(PersonSplitter)
 SECRET_FILE = File.join(File.dirname(__FILE__), 'giftsmas.secret')
-begin
-  SECRET = File.read(SECRET_FILE) if File.file?(SECRET_FILE)
-rescue
+if ENV['GIFTSMAS_SECRET']
+  SECRET = ENV['GIFTSMAS_SECRET']
+elsif File.file?(SECRET_FILE)
+  SECRET = File.read(SECRET_FILE)
+else
   SECRET = nil
 end
 
