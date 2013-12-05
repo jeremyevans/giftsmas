@@ -44,3 +44,6 @@ ul.scaffold_associated_records_list li form { display: inline; }
     }
     .persongifts { page-break-after: always; }
 }
+
+#autoforme_content a.btn {color: white;}
+#content .nav a:visited, #content .nav a, #autoforme_content .pager a {color: #555;}

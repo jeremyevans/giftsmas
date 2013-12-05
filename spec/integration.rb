@@ -7,7 +7,7 @@ require 'rack/test'
 $: << File.dirname(File.dirname(__FILE__))
 require 'giftsmas'
 
-Capybara.app = GiftsmasApp
+Capybara.app = Giftsmas
 
 class Spec::Example::ExampleGroup
   include Rack::Test::Methods
@@ -262,16 +262,23 @@ context "Giftsmas" do
     event_page
     jeremye = Event.exclude(:user_id=>j.id).first
     visit('/choose_event')
-    page.html.should =~ /Christmas/
-    visit("/manage/edit_event_receivers/#{jeremye.id}")
+    select 'Christmas'
+    click_button 'Choose Event'
+    click_link 'Associate Receivers'
     page.all("option").should == []
-    visit("/manage/edit_event_senders/#{jeremye.id}")
+    click_link 'Associate Senders'
     page.all("option").should == []
-    visit("/manage/show_event")
+    click_link 'Manage'
+    click_link 'Events'
+    click_link 'Edit'
     page.all("option").map{|s| s.text}.should == ['', 'Christmas']
-    visit("/manage/show_gift")
+    click_link 'Manage'
+    click_link 'Gifts'
+    click_link 'Edit'
     page.all("option").map{|s| s.text}.should == ['']
-    visit("/manage/show_person")
+    click_link 'Manage'
+    click_link 'People'
+    click_link 'Edit'
     page.all("option").map{|s| s.text}.should == ['']
     visit("/")
     page.all("option").should == []

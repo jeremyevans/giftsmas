@@ -1,8 +1,4 @@
 class Gift < Sequel::Model
-  @scaffold_fields = [:name]
-  @scaffold_associations = [:receivers, :senders]
-  @scaffold_session_value = :event_id
-  @scaffold_order = [:name]
   many_to_many :senders, :class=>:Person, :join_table=>:gift_senders, :right_key=>:person_id, :order=>:name
   many_to_many :receivers, :class=>:Person, :join_table=>:gift_receivers, :right_key=>:person_id, :order=>:name
   many_to_one :event

@@ -4,10 +4,9 @@ require 'erb'
 require 'sinatra/base'
 require 'cgi'
 require 'models'
-require 'scaffolding_extensions'
 require 'rack/csrf'
+require 'sinatra/flash'
 
-ScaffoldingExtensions::MetaModel::SCAFFOLD_OPTIONS[:text_to_string] = true
 PersonSplitter = /,/ unless defined?(PersonSplitter)
 SECRET_FILE = File.join(File.dirname(__FILE__), 'giftsmas.secret')
 if ENV['GIFTSMAS_SECRET']
@@ -18,11 +17,26 @@ else
   SECRET = nil
 end
 
-class Sinatra::Base
+class Giftsmas < Sinatra::Base
   set(:appfile=>'giftsmas.rb', :views=>'views')
   disable :run
+
+  class FileServer
+    def initialize(app, root)
+      @app = app
+      @rfile = Rack::File.new(root)
+    end
+    def call(env)
+      res = @rfile.call(env)
+      res[0] == 200 ? res : @app.call(env)
+    end
+  end
+
+  use FileServer, 'public'
   use Rack::Session::Cookie, :secret=>SECRET
   use Rack::Csrf
+
+  register Sinatra::Flash
 
   def h(text)
     CGI.escapeHTML(text)
@@ -53,7 +67,6 @@ class Sinatra::Base
   end
   
   before do
-    @flash = session.delete(:flash)
     unless %w'/application.css /favicon.ico /login /logout'.include?(env['PATH_INFO'])
       redirect('/login', 303) if !session[:user_id] or !(@user = User[session[:user_id]])
       unless %w'/choose_event /add_event'.include?(env['PATH_INFO'])
@@ -62,9 +75,7 @@ class Sinatra::Base
       end
     end
   end
-end
 
-class Giftsmas < Sinatra::Base
   get '/' do
     @recent_gifts = Gift.recent(@event, 5)
     render :erb, :index
@@ -75,10 +86,10 @@ class Giftsmas < Sinatra::Base
     new_receivers = params[:new_receivers].split(PersonSplitter).map{|name| name.strip}.reject{|name| name.empty?}
     senders = params[:senders].is_a?(Hash) ? params[:senders].keys : []
     receivers = params[:receivers].is_a?(Hash) ? params[:receivers].keys : []
-    session[:flash] = if gift = Gift.add(@event, params[:gift].to_s.strip, senders, receivers, new_senders, new_receivers)
-      "Gift Added: #{h gift.name}<br />Senders: #{gift.senders.map{|s| s.name}.join(', ')}<br />Receivers: #{gift.receivers.map{|s| s.name}.join(', ')}"
+    if gift = Gift.add(@event, params[:gift].to_s.strip, senders, receivers, new_senders, new_receivers)
+      flash[:notice] = "Gift Added: #{h gift.name}<br />Senders: #{gift.senders.map{|s| s.name}.join(', ')}<br />Receivers: #{gift.receivers.map{|s| s.name}.join(', ')}"
     else
-      "Gift Not Added: You must specify a name and at least one sender and receiver."
+      flash[:error] = "Gift Not Added: You must specify a name and at least one sender and receiver."
     end
     redirect('/', 303)
   end
@@ -126,7 +137,7 @@ class Giftsmas < Sinatra::Base
       session[:user_id] = i
       redirect('/choose_event', 303)
     else
-      session[:flash] = 'Bad User/Password'
+      flash[:error] = 'Bad User/Password'
       redirect('/login', 303)
     end
   end
@@ -149,43 +160,43 @@ class Giftsmas < Sinatra::Base
   post '/add_event' do
     name = params[:name].to_s.strip
     if name.empty?
-      session[:flash] = "Must provide a name for the event"
+      flash[:error] = "Must provide a name for the event"
     else
       e = Event.create(:user_id=>@user.id, :name=>params[:name])
       session[:event_id] = e.id
     end
     redirect('/', 303)
   end
-end
 
-class GiftsmasSE < Sinatra::Base
-  get %r{\A/(index/*)?\z} do
-    render :erb, :manage
+  get '/manage' do
+    erb :manage
   end
-  scaffold_all_models :only=>[Event, Gift, Person]
 
-  def scaffold_token_tag
-    Rack::Csrf.tag(env)
-  end
-end
+  require 'autoforme'
+  Forme.register_config(:mine, :base=>:default, :labeler=>:explicit, :wrapper=>:div)
+  Forme.default_config = :mine
 
-class FileServer
-  def initialize(app, root)
-    @app = app
-    @rfile = Rack::File.new(root)
-  end
-  def call(env)
-    res = @rfile.call(env)
-    res[0] == 200 ? res : @app.call(env)
-  end
-end
+  AutoForme.for(:sinatra, self) do
+    model_type :sequel
 
-GiftsmasApp = Rack::Builder.app do
-  use FileServer, 'public'
-  map "/" do
-    run Giftsmas
-  end
-  map "/manage" do
-    run GiftsmasSE
+    model Event do
+      columns [:name]
+      order [:name]
+      association_links [:gifts]
+      mtm_associations [:receivers, :senders]
+      session_value :user_id
+    end
+    model Gift do
+      columns [:name]
+      order [:name]
+      association_links [:receivers, :senders]
+      session_value :event_id
+    end
+    model Person do
+      columns [:name]
+      order [:name]
+      association_links [:sender_events, :receiver_events, :gifts_sent, :gifts_received]
+      session_value :user_id
+    end
   end
 end
