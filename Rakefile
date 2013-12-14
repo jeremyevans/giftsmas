@@ -2,6 +2,7 @@ require "rake"
 require "rake/clean"
 require "spec/rake/spectask"
 
+desc "Run the unit and integration specs"
 task :default=>[:spec, :integration]
 
 desc "Run unit tests"
