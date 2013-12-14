@@ -48,9 +48,9 @@
         <tbody>
           <% @recent_gifts.each do |g| %>
           <tr>
-            <td><a href="/manage/edit_gift/<%= g.id %>"><%=h g.name %></a></td>
-            <td><a href="/manage/edit_gift_senders/<%= g.id %>"><%=h g.senders.map{|s| s.name}.sort.join(', ')%></a></td>
-            <td><a href="/manage/edit_gift_receivers/<%= g.id %>"><%=h g.receivers.map{|s| s.name}.sort.join(', ')%></a></td>
+            <td><a href="/Gift/edit/<%= g.id %>"><%=h g.name %></a></td>
+            <td><a href="/Gift/mtm_edit/<%= g.id %>?association=senders"><%=h g.senders.map{|s| s.name}.sort.join(', ')%></a></td>
+            <td><a href="/Gift/mtm_edit/<%= g.id %>?association=receivers"><%=h g.receivers.map{|s| s.name}.sort.join(', ')%></a></td>
           </tr>
           <% end %>
         </tbody></table>

@@ -136,6 +136,14 @@ context "Giftsmas" do
     gift.receivers.map{|x| x.name}.should == %w'Allyson Baz Qux'
 
     page.all("td").map{|s| s.text}.should == ["FooBar", "Bar, Foo, Jeremy", "Allyson, Baz, Qux", "Jewelry", "Jeremy", "Allyson"]
+    click_link 'FooBar'
+    click_button 'Update'
+    visit '/'
+    click_link 'Jeremy'
+    click_button 'Update'
+    visit '/'
+    click_link 'Allyson'
+    click_button 'Update'
   end
 
   specify "/choose_event should change the current event" do
