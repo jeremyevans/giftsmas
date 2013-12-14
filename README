@@ -7,7 +7,7 @@ Christmas.
 
 == Demo
 
-If you just want to play around with a demo, go to http://giftsmas.heroku.com
+If you just want to play around with a demo, go to http://giftsmas-demo.jeremyevans.net
 and login with demo/demo.
 
 == Prerequisites for general use
@@ -102,8 +102,7 @@ of gifts after they have been added, or to delete gifts.
 
 * rake
 * rspec 1
-* hpricot
-* unicorn 
+* capybara
 
 === Setup
 
@@ -120,10 +119,6 @@ The specs are run with rake:
   rake integration # Integration tests
   rake # Both
   
-The integration specs test the full stack, setting up a web server, having
-a net/http web client access the web server, and making sure that it is
-displaying information correctly and updating the database correctly.
-
 == License
 
 Giftsmas is released under the MIT License.  See the LICENSE file for details.
