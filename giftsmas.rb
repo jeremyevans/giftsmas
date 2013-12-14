@@ -189,6 +189,7 @@ class Giftsmas < Sinatra::Base
     model Gift do
       columns [:name]
       order [:name]
+      mtm_associations [:receivers, :senders]
       association_links [:receivers, :senders]
       session_value :event_id
     end
