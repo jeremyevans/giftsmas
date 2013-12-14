@@ -1,0 +1,11 @@
+source "https://rubygems.org"
+
+gem "pg"
+gem "autoforme"
+gem "sequel"
+gem "sequel_pg"
+gem "sequel_postgresql_triggers"
+gem "sinatra"
+gem "sinatra-flash"
+gem "bcrypt-ruby"
+gem "rack_csrf"
