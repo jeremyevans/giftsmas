@@ -19,7 +19,7 @@ and login with demo/demo.
 * sinatra (1.3.2)
 * sequel (3.32.0)
 * sequel_postgresql_triggers (1.0.2)
-* scaffolding_extensions (1.5.4)
+* autoforme
 
 == Command line setup
 
