@@ -18,7 +18,7 @@ class Gift < Sequel::Model
       gift_senders = gift_senders.compact.uniq
       gift_receivers = gift_receivers.compact.uniq
       if gift_senders.length > 0 and gift_receivers.length > 0
-        gift = create(:event_id=>event.id, :name=>gift_name)
+        gift = create(:user_id=>user.id, :event_id=>event.id, :name=>gift_name)
         gift_senders.each{|s| gift.add_sender(s)}
         gift_receivers.each{|s| gift.add_receiver(s)}
         gift
@@ -32,5 +32,10 @@ class Gift < Sequel::Model
       limit(limit).
       eager(:senders, :receivers).
       all
+  end
+
+  def before_create
+    self.user_id ||= event.user_id
+    super
   end
 end
