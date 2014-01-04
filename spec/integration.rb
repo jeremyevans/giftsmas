@@ -77,7 +77,7 @@ context "Giftsmas" do
 
     event = Event.first
     event.name.should == 'Christmas'
-    current_path.should == '/'
+    current_path.should =~ %r{\A/add_gift/\d+\z}
   end
 
   specify "should not add gifts without a sender, receiver, and a name" do
@@ -89,14 +89,14 @@ context "Giftsmas" do
     click_on 'Add Gift'
     Gift.count.should == 0
 
-    visit('/')
+    click_link 'Giftsmas: Christmas'
     fill_in 'new_senders', :with=>'Jeremy'
     fill_in 'new_receivers', :with=>''
     fill_in 'gift', :with=>'Jewelry'
     click_on 'Add Gift'
     Gift.count.should == 0
 
-    visit('/')
+    click_link 'Giftsmas: Christmas'
     fill_in 'new_senders', :with=>''
     fill_in 'new_receivers', :with=>'Allyson'
     fill_in 'gift', :with=>'Jewelry'
@@ -120,7 +120,7 @@ context "Giftsmas" do
     event.senders.map{|s| s.name}.should == %w'Jeremy'
     event.receivers.map{|s| s.name}.should == %w'Allyson'
 
-    page.find("div.alert").text.should == 'Gift Added: JewelrySenders: JeremyReceivers: Allyson'
+    page.find("div.alert").text.should == 'Gift Added'
 
     check 'Jeremy'
     check 'Allyson'
@@ -138,10 +138,10 @@ context "Giftsmas" do
     page.all("td").map{|s| s.text}.should == ["FooBar", "Bar, Foo, Jeremy", "Allyson, Baz, Qux", "Jewelry", "Jeremy", "Allyson"]
     click_link 'FooBar'
     click_button 'Update'
-    visit '/'
+    click_link 'Giftsmas: Christmas'
     click_link 'Jeremy'
     click_button 'Update'
-    visit '/'
+    click_link 'Giftsmas: Christmas'
     click_link 'Allyson'
     click_button 'Update'
   end
@@ -288,7 +288,9 @@ context "Giftsmas" do
     click_link 'People'
     click_link 'Edit'
     page.all("option").map{|s| s.text}.should == ['']
-    visit("/")
+    click_link 'Giftsmas'
+    select 'Christmas'
+    click_button 'Choose Event'
     page.all("option").should == []
     visit("/reports/chronological")
     page.find('#content').text.should_not =~ /J[EPG]/

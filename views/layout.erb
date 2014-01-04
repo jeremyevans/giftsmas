@@ -12,19 +12,26 @@
 <div class="navbar">
   <div class="navbar-inner">
     <div class="container">
-      <a href="/" class="brand">Giftsmas<%=h ": #{@event.name}" if @event %></a>
+      <% if current_event %>
+        <a href="/add_gift/<%= @event.id %>" class="brand">Giftsmas: <%=h @event.name %></a>
+      <% else %>
+        <a href="/choose_event" class="brand">Giftsmas</a>
+      <% end %>
 
       <ul class="nav">
         <% if @event %>
           <li><a href="/Event/mtm_edit/<%= @event.id %>?association=receivers">Associate Receivers</a></li>
           <li><a href="/Event/mtm_edit/<%= @event.id %>?association=senders">Associate Senders</a></li>
-          <li><a href="/reports">Reports</a></li>
-
+          <li><a href="/reports/event/<%= @event.id %>">Reports</a></li>
           <li class="divider-vertical"></li>
-          <li><a href="/choose_event">Change Event</a></li>
+        <% end %>
+        <% if @user %>
+          <% if @event %>
+            <li><a href="/choose_event">Change Event</a></li>
+          <% end %>
           <li><a href="/manage">Manage</a></li>
         <% end %>
-      </ul>
+        </ul>
       <% if @user %>
         <form action="/logout" class="button_to" method="post">
           <%= Rack::Csrf.tag(env) %>
