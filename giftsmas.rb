@@ -17,6 +17,14 @@ else
   SECRET = nil
 end
 
+if ENV['RACK_ENV'] == 'development'
+  class Tilt::Cache
+    def fetch(*)
+      yield
+    end
+  end
+end
+
 class Giftsmas < Sinatra::Base
   set(:appfile=>'giftsmas.rb', :views=>'views')
   disable :run
