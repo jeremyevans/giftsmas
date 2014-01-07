@@ -1,17 +1,3 @@
 <% @title = 'Gift Summary Crosstab' %>
 
-<table class="table table-condensed table-bordered table-striped">
-<thead><tr><th>Sender\Receiver</th>
-<% @headers.each do |x| %>
-  <th><%=h x.to_s %></th>
-<% end %>
-</tr></thead>
-<tbody>
-<% @rows.each do |r| %>
-  <tr><td><%=h r.first %></td>
-  <% r[1..-1].each do |x| %>
-    <td><%= x%></td>
-  <% end %>
-  </tr>
-<% end %>
-</tbody></table>
+<%= Thamble.table(@rows, :table=>{:class=>"table table-condensed table-bordered table-striped"}, :headers=>['Sender\Receiver'] + @headers) %>

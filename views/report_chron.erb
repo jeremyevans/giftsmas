@@ -1,12 +1,5 @@
 <% @title = 'Gifts in Chronological Order' %>
 
-<table class="table table-condensed table-bordered table-striped">
-<thead><tr><th>Time</th><th>Gift</th><th>Senders</th><th>Receivers</th></tr></thead>
-<tbody>
-<% @gifts.each do |g| %>
-  <tr><td><%= g.inserted_at.strftime('%I:%M:%S%p') %></td>
-  <td><%=h g.name %></td>
-  <td><%= g.senders.map{|x| h x.name}.join(', ') %></td>
-  <td><%= g.receivers.map{|x| h x.name}.join(', ') %></td></tr>
-<% end %>
-</tbody></table>
+<%= Thamble.table(@gifts, :table=>{:class=>"table table-condensed table-bordered table-striped"}, :headers=>'Time,Gift,Senders,Receivers') do |g, t|
+  [g.inserted_at.strftime('%I:%M:%S%p'), g.name, g.senders.map{|x| x.name}.join(', '), g.receivers.map{|x| x.name}.join(', ')]
+end %>

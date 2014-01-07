@@ -42,18 +42,9 @@
       </fieldset>
 
       <% unless @recent_gifts.empty? %>
-        <table id="recent_gifts" class="table table-condensed">
-        <caption>Recent Gifts</caption>
-        <thead><tr><th>Gift</th><th>Senders</th><th>Receivers</th></tr></thead>
-        <tbody>
-          <% @recent_gifts.each do |g| %>
-          <tr>
-            <td><a href="/Gift/edit/<%= g.id %>"><%=h g.name %></a></td>
-            <td><a href="/Gift/mtm_edit/<%= g.id %>?association=senders"><%=h g.senders.map{|s| s.name}.sort.join(', ')%></a></td>
-            <td><a href="/Gift/mtm_edit/<%= g.id %>?association=receivers"><%=h g.receivers.map{|s| s.name}.sort.join(', ')%></a></td>
-          </tr>
-          <% end %>
-        </tbody></table>
+        <%= Thamble.table(@recent_gifts, :table=>{:class=>"table table-condensed", :id=>"recent_gifts"}, :headers=>'Gift,Senders,Receivers', :caption=>'Recent Gifts') do |g, t|
+          [t.a(g.name, "/Gift/edit/#{g.id}"), t.a(g.senders.map{|s| s.name}.sort.join(', '), "/Gift/mtm_edit/#{g.id}?association=senders"),  t.a(g.receivers.map{|s| s.name}.sort.join(', '), "/Gift/mtm_edit/#{g.id}?association=receivers")]
+        end %>
       <% end %>
     </div>
   </div>

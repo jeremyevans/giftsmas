@@ -135,7 +135,7 @@ context "Giftsmas" do
     gift.senders.map{|x| x.name}.should == %w'Bar Foo Jeremy'
     gift.receivers.map{|x| x.name}.should == %w'Allyson Baz Qux'
 
-    page.all("td").map{|s| s.text}.should == ["FooBar", "Bar, Foo, Jeremy", "Allyson, Baz, Qux", "Jewelry", "Jeremy", "Allyson"]
+    page.all("td").map{|s| s.text.chomp}.should == ["FooBar", "Bar, Foo, Jeremy", "Allyson, Baz, Qux", "Jewelry", "Jeremy", "Allyson"]
     click_link 'FooBar'
     click_button 'Update'
     click_link 'Giftsmas: Christmas'
@@ -242,7 +242,7 @@ context "Giftsmas" do
     click_on 'Reports'
     click_on 'Summary'
     page.find('h3').text.should == 'Total Number of Gifts: 4'
-    page.all('table caption').map{|s| s.text}.should == ['Totals By Sender', 'Totals By Receiver']
+    page.all('table caption').map{|s| s.text.chomp}.should == ['Totals By Sender', 'Totals By Receiver']
     tables = page.all('table')
     table = tables.first
     table.all('th').map{|s| s.text}.should == ['Sender', 'Number of Gifts']

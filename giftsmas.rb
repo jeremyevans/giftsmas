@@ -6,6 +6,7 @@ require 'cgi'
 require 'models'
 require 'rack/csrf'
 require 'sinatra/flash'
+require 'thamble'
 
 PersonSplitter = /,/ unless defined?(PersonSplitter)
 SECRET_FILE = File.join(File.dirname(__FILE__), 'giftsmas.secret')

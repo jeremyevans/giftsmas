@@ -2,20 +2,5 @@
 
 <h3>Total Number of Gifts: <%= @event.num_gifts %></h3>
 
-<table class="table table-condensed table-bordered table-striped">
-<caption>Totals By Sender</caption>
-<thead><tr><th>Sender</th><th>Number of Gifts</th></tr></thead>
-<tbody>
-<% @senders.each do |s,n| %>
-  <tr><td><%=h s%></td><td><%= n %></td></tr>
-<% end %>
-</tbody></table>
-
-<table class="table table-condensed table-bordered table-striped">
-<caption>Totals By Receiver</caption>
-<thead><tr><th>Receiver</th><th>Number of Gifts</th></tr></thead>
-<tbody>
-<% @receivers.each do |s,n| %>
-  <tr><td><%=h s%></td><td><%= n %></td></tr>
-<% end %>
-</tbody></table>
+<%= Thamble.table(@senders, :table=>{:class=>"table table-condensed table-bordered table-striped"}, :headers=>'Sender,Number of Gifts', :caption=>'Totals By Sender') %>
+<%= Thamble.table(@receivers, :table=>{:class=>"table table-condensed table-bordered table-striped"}, :headers=>'Receiver,Number of Gifts', :caption=>'Totals By Receiver') %>
