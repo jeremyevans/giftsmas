@@ -2,14 +2,7 @@
 GIFTSMAS_ENV = :test
 $: << File.dirname(File.dirname(__FILE__))
 require 'models'
-
-class Spec::Example::ExampleGroup
-  def execute(*args, &block)
-    x = nil
-    DB.transaction{x = super(*args, &block); raise Sequel::Rollback}
-    x
-  end
-end
+require File.expand_path("rspec_helper", File.dirname(__FILE__))
 
 describe Event do
   before do

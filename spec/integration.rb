@@ -1,3 +1,4 @@
+ENV['GIFTSMAS_TEST'] = '1'
 GIFTSMAS_ENV = :test
 require 'rubygems'
 require 'capybara'
@@ -6,24 +7,14 @@ require 'capybara/rspec/matchers'
 require 'rack/test'
 $: << File.dirname(File.dirname(__FILE__))
 require 'giftsmas'
+require File.expand_path("rspec_helper", File.dirname(__FILE__))
 
 Capybara.app = Giftsmas.app
 
-class Spec::Example::ExampleGroup
+class RSPEC_EXAMPLE_GROUP
   include Rack::Test::Methods
   include Capybara::DSL
   include Capybara::RSpecMatchers
-
-  after do
-    Capybara.reset_sessions!
-    Capybara.use_default_driver
-  end
-
-  def execute(*args, &block)
-    result = nil
-    Sequel::Model.db.transaction(:rollback=>:always){result = super(*args, &block)}
-    result
-  end
 
   def app
     APP
@@ -48,7 +39,7 @@ class Spec::Example::ExampleGroup
   end
 end
 
-context "Giftsmas" do
+describe "Giftsmas" do
   specify "should handle pages that require logins" do
     visit('/')
     page.current_path.should == '/login'
