@@ -7,7 +7,7 @@ require 'rack/test'
 $: << File.dirname(File.dirname(__FILE__))
 require 'giftsmas'
 
-Capybara.app = Giftsmas
+Capybara.app = Giftsmas.app
 
 class Spec::Example::ExampleGroup
   include Rack::Test::Methods
