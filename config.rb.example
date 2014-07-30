@@ -1,4 +1,3 @@
-Sinatra::Base.set(:environment=>:production, :logging=>true) if defined?(Sinatra)
 DB = Sequel.connect(case(GIFTSMAS_ENV)
 when :production
   'postgres:///giftsmas'
