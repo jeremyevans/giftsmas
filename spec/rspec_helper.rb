@@ -10,12 +10,12 @@ unless defined?(RSPEC_EXAMPLE_GROUP)
           c.syntax = :should
         end
         if defined?(Capybara)
-          c.after(:each) do |example|
+          config.after(:each) do |example|
             Capybara.reset_sessions!
             Capybara.use_default_driver
           end
         end
-        c.around(:each) do |example|
+        config.around(:each) do |example|
           DB.transaction(:rollback=>:always){example.run}
         end
       end
