@@ -3,7 +3,6 @@ require 'rubygems'
 require 'erb'
 require 'roda'
 require 'models'
-require 'rack/csrf'
 require 'thamble'
 require 'autoforme'
 require 'rack/protection'
@@ -20,7 +19,7 @@ end
 
 class Giftsmas < Roda
   use Rack::Session::Cookie, :secret=>SECRET
-  use Rack::Csrf
+  plugin :csrf
   use Rack::Static, :urls=>%w'/bootstrap.min.css /application.css /favicon.ico', :root=>'public'
   use Rack::Protection
 
@@ -29,6 +28,8 @@ class Giftsmas < Roda
   plugin :flash
   plugin :error_handler
   plugin :not_found
+  plugin :symbol_matchers
+  plugin :symbol_views
 
   def html_opts(hash)
     hash.map{|k,v| "#{k}=\"#{h(v)}\""}.join(' ')
@@ -61,7 +62,7 @@ class Giftsmas < Roda
   end
 
   def with_event(path)
-    request.is path do |id|
+    request.is "#{path}/:d" do |id|
       get_event(id)
       yield
     end
@@ -107,16 +108,16 @@ class Giftsmas < Roda
   route do |r|
     r.is 'login' do
       r.get do
-        view :login
+        :login
       end
 
       r.post do 
         if i = User.login_user_id(r['user'], r['password'])
           session[:user_id] = i
-          r.redirect('/choose_event', 303)
+          r.redirect('/choose_event')
         else
           flash[:error] = 'Bad User/Password'
-          r.redirect('/login', 303)
+          r.redirect('/login')
         end
       end
     end
@@ -127,13 +128,13 @@ class Giftsmas < Roda
     end
 
     if !session[:user_id] || !(@user = User[session[:user_id]])
-      r.redirect('/login', 303)
+      r.redirect('/login')
     end
     
-    with_event "add_gift/:event_id" do
+    with_event "add_gift" do
       r.get do
         @recent_gifts = Gift.recent(@event, 5)
-        view :index
+        :index
       end
 
       r.post do
@@ -146,53 +147,53 @@ class Giftsmas < Roda
         else
           flash[:error] = "Gift Not Added: You must specify a name and at least one sender and receiver."
         end
-        r.redirect("/add_gift/#{@event.id}", 303)
+        r.redirect(r.full_path_info)
       end
     end
       
     r.on "reports", :method=>'get' do
-      with_event "event/:event_id" do
-        view :reports
+      with_event "event" do
+        :reports
       end
     
-      with_event 'chronological/:event_id' do
+      with_event 'chronological' do
         @gifts = @event.gifts
-        view :report_chron
+        :report_chron
       end
       
-      with_event 'crosstab/:event_id' do
+      with_event 'crosstab' do
         @headers, @rows = @event.gifts_crosstab
-        view :report_crosstab
+        :report_crosstab
       end
       
-      with_event 'summary/:event_id' do
+      with_event 'summary' do
         @senders, @receivers = @event.gifts_summary
-        view :report_summary
+        :report_summary
       end
       
-      with_event 'by_sender/:event_id' do
+      with_event 'by_sender' do
         @senders = @event.gifts_by_sender
-        view :report_sender
+        :report_sender
       end
       
-      with_event 'by_receiver/:event_id' do
+      with_event 'by_receiver' do
         @receivers = @event.gifts_by_receiver
-        view :report_receiver
+        :report_receiver
       end
       
-      with_event 'thank_yous/:event_id' do
+      with_event 'thank_yous' do
         @receivers = @event.thank_you_notes
-        view :report_thank_yous
+        :report_thank_yous
       end
     end
     
-    r.get "" do
+    r.root do
       r.redirect '/choose_event'
     end
     
     r.is 'choose_event' do
       r.get do
-        view :choose_event
+        :choose_event
       end
       
       r.post do
@@ -213,7 +214,7 @@ class Giftsmas < Roda
     end
 
     r.get 'manage' do
-      view :manage
+      :manage
     end
 
     autoforme

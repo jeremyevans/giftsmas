@@ -2,7 +2,7 @@
 
 <% unless @user.events.empty? %>
   <form action="/choose_event" class="form-horizontal" method="post">
-    <%= Rack::Csrf.tag(env) %>
+    <%= csrf_tag %>
     <fieldset>
       <legend>Choose an Existing Event</legend>
       <div class="control-group">
@@ -19,7 +19,7 @@
 <% end %>
 
 <form action="/add_event" class="form-horizontal" method="post">
-  <%= Rack::Csrf.tag(env) %>
+  <%= csrf_tag %>
   <fieldset>
     <legend>Create a New Event</legend>
     <div class="control-group">

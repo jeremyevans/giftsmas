@@ -1,7 +1,7 @@
 <% @title = 'Add Gift' %>
 
 <form method='post' action='/add_gift/<%= @event.id %>' class="form-horizontal">
-  <%= Rack::Csrf.tag(env) %>
+  <%= csrf_tag %>
   <fieldset>
     <div class="control-group">
       <label class="control-label" for="gift">Gift</label>

@@ -34,7 +34,7 @@
         </ul>
       <% if @user %>
         <form action="/logout" class="button_to" method="post">
-          <%= Rack::Csrf.tag(env) %>
+          <%= csrf_tag %>
           <input class="btn btn-warning pull-right" type="submit" value="Logout" />
         </form>
       <% end %>
