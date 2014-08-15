@@ -117,7 +117,7 @@ class Giftsmas < Roda
           r.redirect('/choose_event')
         else
           flash[:error] = 'Bad User/Password'
-          r.redirect('/login')
+          r.redirect
         end
       end
     end
@@ -147,7 +147,7 @@ class Giftsmas < Roda
         else
           flash[:error] = "Gift Not Added: You must specify a name and at least one sender and receiver."
         end
-        r.redirect(r.full_path_info)
+        r.redirect
       end
     end
       
