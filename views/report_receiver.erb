@@ -1,7 +1,7 @@
 <% @title = 'Gifts by Receiver' %>
 
 <% @receivers.each do |r, gifts| %>
-  <%= Thamble.table(gifts, :table=>{:class=>"persongifts table table-condensed table-bordered table-striped"}, :headers=>'Time,Gift,Senders,Other Receivers', :caption=>r) do |g, t|
+  <%== Thamble.table(gifts, :table=>{:class=>"persongifts table table-condensed table-bordered table-striped"}, :headers=>'Time,Gift,Senders,Other Receivers', :caption=>r) do |g, t|
     [g.inserted_at.strftime('%I:%M:%S%p'), g.name, g.senders.map{|x| x.name}.join(', '), (g.receivers.map{|x| x.name} - [r]).join(', ')]
   end %>
 <% end %>

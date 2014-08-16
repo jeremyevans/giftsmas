@@ -2,13 +2,13 @@
 
 <% unless @user.events.empty? %>
   <form action="/choose_event" class="form-horizontal" method="post">
-    <%= csrf_tag %>
+    <%== csrf_tag %>
     <fieldset>
       <legend>Choose an Existing Event</legend>
       <div class="control-group">
         <label class="control-label" for="event_id">Event</label>
         <div class="controls">
-          <%= model_select(:event_id, @user.events) %>
+          <%== model_select(:event_id, @user.events) %>
         </div>
       </div>
       <div class="form-actions">
@@ -19,7 +19,7 @@
 <% end %>
 
 <form action="/add_event" class="form-horizontal" method="post">
-  <%= csrf_tag %>
+  <%== csrf_tag %>
   <fieldset>
     <legend>Create a New Event</legend>
     <div class="control-group">

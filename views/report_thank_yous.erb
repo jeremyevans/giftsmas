@@ -2,9 +2,9 @@
 
 <ul>
 <% @receivers.each do |r, senders| %>
-  <li class="persongifts"><%=h r %><ul>
+  <li class="persongifts"><%= r %><ul>
   <% senders.each do |s, gifts| %>
-    <li><%=h s %><ul>
+    <li><%= s %><ul>
     <% gifts.each do |g| %>
     <li><%= g %></li>
     <% end %></ul></li>

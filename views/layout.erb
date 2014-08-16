@@ -13,7 +13,7 @@
   <div class="navbar-inner">
     <div class="container">
       <% if current_event %>
-        <a href="/add_gift/<%= @event.id %>" class="brand">Giftsmas: <%=h @event.name %></a>
+        <a href="/add_gift/<%= @event.id %>" class="brand">Giftsmas: <%= @event.name %></a>
       <% else %>
         <a href="/choose_event" class="brand">Giftsmas</a>
       <% end %>
@@ -34,7 +34,7 @@
         </ul>
       <% if @user %>
         <form action="/logout" class="button_to" method="post">
-          <%= csrf_tag %>
+          <%== csrf_tag %>
           <input class="btn btn-warning pull-right" type="submit" value="Logout" />
         </form>
       <% end %>
@@ -43,14 +43,14 @@
 </div>
 
 <div class="container" id="content">
-<%= "<h1>#{@title}</h1>" if @title %>
+<%== "<h1>#{h @title}</h1>" if @title %>
   <% if flash[:notice] %>
     <div class="alert alert-success"><p><%= flash[:notice] %></p></div>
   <% end %>
   <% if flash[:error] %>
     <div class="alert alert-error"><p><%= flash[:error] %></p></div>
   <% end %>
-<%= yield %>
+<%== yield %>
 </div>
 
 </body></html>

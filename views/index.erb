@@ -1,7 +1,7 @@
 <% @title = 'Add Gift' %>
 
 <form method='post' action='/add_gift/<%= @event.id %>' class="form-horizontal">
-  <%= csrf_tag %>
+  <%== csrf_tag %>
   <fieldset>
     <div class="control-group">
       <label class="control-label" for="gift">Gift</label>
@@ -42,7 +42,7 @@
       </fieldset>
 
       <% unless @recent_gifts.empty? %>
-        <%= Thamble.table(@recent_gifts, :table=>{:class=>"table table-condensed", :id=>"recent_gifts"}, :headers=>'Gift,Senders,Receivers', :caption=>'Recent Gifts') do |g, t|
+        <%== Thamble.table(@recent_gifts, :table=>{:class=>"table table-condensed", :id=>"recent_gifts"}, :headers=>'Gift,Senders,Receivers', :caption=>'Recent Gifts') do |g, t|
           [t.a(g.name, "/Gift/edit/#{g.id}"), t.a(g.senders.map{|s| s.name}.sort.join(', '), "/Gift/mtm_edit/#{g.id}?association=senders"),  t.a(g.receivers.map{|s| s.name}.sort.join(', '), "/Gift/mtm_edit/#{g.id}?association=receivers")]
         end %>
       <% end %>

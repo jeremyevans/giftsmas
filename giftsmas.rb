@@ -1,10 +1,8 @@
 #!/usr/bin/env ruby
 require 'rubygems'
-require 'erb'
 require 'roda'
 require 'models'
 require 'thamble'
-require 'autoforme'
 require 'rack/protection'
 
 PersonSplitter = /,/ unless defined?(PersonSplitter)
@@ -24,7 +22,7 @@ class Giftsmas < Roda
   use Rack::Protection
 
   plugin :h
-  plugin :render
+  plugin :render, :escape=>true
   plugin :flash
   plugin :error_handler
   plugin :not_found
@@ -71,15 +69,12 @@ class Giftsmas < Roda
   error do |e|
     $stderr.puts e.message
     e.backtrace.each{|x| $stderr.puts x}
-    view :inline=>"<h3>Oops, an error occurred.</h3>"
+    view :content=>"<h3>Oops, an error occurred.</h3>"
   end
 
   not_found do
-    view :inline=>"<h3>The page you are looking for does not exist.</h3>"
+    view :content=>"<h3>The page you are looking for does not exist.</h3>"
   end
-
-  Forme.register_config(:mine, :base=>:default, :labeler=>:explicit, :wrapper=>:div)
-  Forme.default_config = :mine
 
   plugin :autoforme do
     model Event do
@@ -104,6 +99,9 @@ class Giftsmas < Roda
       session_value :user_id
     end
   end
+
+  Forme.register_config(:mine, :base=>:default, :labeler=>:explicit, :wrapper=>:div)
+  Forme.default_config = :mine
 
   route do |r|
     r.is 'login' do
