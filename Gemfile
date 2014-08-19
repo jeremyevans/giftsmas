@@ -1,14 +1,14 @@
 source "https://rubygems.org"
 
 gem "pg"
-gem "autoforme"
+gem "autoforme", '>= 1.0.1'
 gem "sequel"
 gem "sequel_pg"
 gem "sequel_postgresql_triggers"
-gem "roda"
+gem "roda", '>= 1.0.0'
+gem "erubis"
 gem "tilt"
 gem "rack-protection"
-gem "sinatra-flash"
 gem "bcrypt-ruby"
 gem "rack_csrf"
 gem "thamble"
