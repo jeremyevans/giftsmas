@@ -7,7 +7,7 @@ GEM
       sequel (>= 3.0.0)
     bcrypt-ruby (3.0.1)
     erubis (2.7.0)
-    forme (1.0.0)
+    forme (1.1.0)
     kgio (2.8.1)
     pg (0.17.1)
     rack (1.5.2)
@@ -16,10 +16,11 @@ GEM
     rack_csrf (2.4.0)
       rack (>= 0.9)
     raindrops (0.10.0)
-    roda (1.0.0)
+    roda (1.1.0)
       rack
-    sequel (4.13.0)
-    sequel_pg (1.6.10)
+    sass (3.4.7)
+    sequel (4.14.0)
+    sequel_pg (1.6.11)
       pg (>= 0.8.0)
       sequel (>= 3.39.0)
     sequel_postgresql_triggers (1.0.7)
@@ -42,7 +43,8 @@ DEPENDENCIES
   pg
   rack-protection
   rack_csrf
-  roda (>= 1.0.0)
+  roda (>= 1.1.0)
+  sass
   sequel
   sequel_pg
   sequel_postgresql_triggers

@@ -1,36 +1,39 @@
-div.navbar-inner {background-color: #141; background-image: none; filter: none; }
+div.navbar-inner {
+  background-color: #141;
+  background-image: none;
+  filter: none;
+}
 
-a { color: #FFF}
-a:link { color: #FFF}
+a {
+  &, &:link { color: #FFF }
+  &:visited { color: #555}
+  &:hover { color: #C00}
+}
+
 .table-striped a:link { color: #888}
-a:visited { color: #555}
-a:hover { color: #C00}
 
 body { 
 	background-color: #cdc;
 	color: #600;	
 }
-h1, h2, h3, h4, label {
-  color: inherit;
-}
+
+h1, h2, h3, h4, label { color: inherit; }
+
 .navbar .brand { color: #c00;}
+
 div.form-actions {
   background-color: inherit;
   border-top-width: 0;
   padding-top: 0;
 }
+
 legend { margin-bottom: 0; }
 
-div.giftpeople input, div.giftpeople label {
-  display: inline;
-}
-table#recent_gifts a {
-  color: #600;
-}
+div.giftpeople input, div.giftpeople label { display: inline; }
 
-input, select, textarea { 
-    width: auto;
-}
+table#recent_gifts a { color: #600; }
+
+input, select, textarea { width: auto; }
 
 table.formtable td.attribute { text-align: right; }
 

@@ -32,3 +32,11 @@ rescue LoadError
     puts "Must install rspec to run the default task (which runs specs)"
   end
 end
+
+namespace :assets do
+  desc "Precompile the assets"
+  task :precompile do
+    require './giftsmas'
+    Giftsmas.compile_assets
+  end
+end

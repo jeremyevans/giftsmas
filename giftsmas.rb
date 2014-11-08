@@ -1,7 +1,7 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'roda'
-require 'models'
+require './models'
 require 'thamble'
 require 'rack/protection'
 
@@ -18,11 +18,19 @@ end
 class Giftsmas < Roda
   use Rack::Session::Cookie, :secret=>SECRET
   plugin :csrf
-  use Rack::Static, :urls=>%w'/bootstrap.min.css /application.css /favicon.ico', :root=>'public'
+  use Rack::Static, :urls=>%w'/favicon.ico', :root=>'public'
   use Rack::Protection
 
   plugin :h
   plugin :render, :escape=>true
+  plugin :assets,
+    :css=>%w'bootstrap.min.css application.scss',
+    :css_opts=>{:style=>:compressed, :cache=>false},
+    :css_dir=>nil,
+    :compiled_path=>nil,
+    :compiled_css_dir=>nil,
+    :precompiled=>'compiled_assets.json',
+    :prefix=>nil
   plugin :flash
   plugin :error_handler
   plugin :not_found
@@ -104,6 +112,8 @@ class Giftsmas < Roda
   Forme.default_config = :mine
 
   route do |r|
+    r.assets
+
     r.is 'login' do
       r.get do
         :login
