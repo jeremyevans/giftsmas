@@ -1,6 +1,5 @@
 require "rake"
 require "rake/clean"
-require "spec/rake/spectask"
 
 begin
   begin
