@@ -145,12 +145,12 @@ describe "Giftsmas" do
 
     select 'Birthday'
     click_on 'Choose Event'
-    page.find('div.navbar a').text.should == 'Giftsmas: Birthday'
+    page.find('.navbar a').text.should == 'Giftsmas: Birthday'
 
     click_on 'Change Event'
     select 'Christmas'
     click_on 'Choose Event'
-    page.find('div.navbar a').text.should == 'Giftsmas: Christmas'
+    page.find('.navbar a').text.should == 'Giftsmas: Christmas'
   end
 
   specify "/logout should log the user out" do

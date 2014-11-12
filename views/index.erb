@@ -3,10 +3,13 @@
 <form method='post' action='/add_gift/<%= @event.id %>' class="form-horizontal">
   <%== csrf_tag %>
   <fieldset>
-    <div class="control-group">
-      <label class="control-label" for="gift">Gift</label>
-      <div class="controls">
-        <input type="text" name="gift" id="gift" size="60" /><br />
+    <div class="form-group">
+      <div class="col-md-1">
+        <input type="submit" class="btn btn-default" value="Add Gift"/>
+      </div>
+      <label class="col-md-1 control-label" for="gift">Gift</label>
+      <div class="col-md-10 controls">
+        <input type="text" class="form-control" name="gift" id="gift" size="60" /><br />
       </div>
     </div>
   </fieldset>
@@ -15,31 +18,28 @@
     <% [:senders, :receivers].each do |sr|
     x = @event.send(sr)
     unless x.empty? %>
-      <div class="span2 giftpeople">
+      <div class="col-md-3 giftpeople">
         <%= sr.to_s.capitalize %>:<br />
         <% x.each do |p| %>
           <input type="checkbox" id="<%= sr %>_<%= p.id %>" name="<%= sr %>[<%= p.id %>]" value="<%= p.id %>" /> <label for="<%= sr %>_<%= p.id %>"><%= p.name %></label><br />
         <% end %>
       </div>
     <% end end %>
-    <div class="span8">
-      <fieldset>
-        <div class="control-group">
-          <label class="control-label" for="new_senders">New Senders</label>
-          <div class="controls">
+    <div class="col-md-6">
+      <div class="row">
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="new_senders">New Senders</label>
+          <div class="col-md-8">
             <input type="text" name="new_senders" id="new_senders" /><br />
           </div>
+        <div class="form-group">
         </div>
-        <div class="control-group">
-          <label class="control-label" for="new_receviers">New Receivers</label>
-          <div class="controls">
+          <label class="col-md-4 control-label" for="new_receviers">New Receivers</label>
+          <div class="col-md-8">
             <input type="text" name="new_receivers" id="new_receivers" /><br />
           </div>
         </div>
-        <div class="form-actions">
-          <input type="submit" class="btn-large" value="Add Gift"/>
-        </div>
-      </fieldset>
+      </div>
 
       <% unless @recent_gifts.empty? %>
         <%== Thamble.table(@recent_gifts, :table=>{:class=>"table table-condensed", :id=>"recent_gifts"}, :headers=>'Gift,Senders,Receivers', :caption=>'Recent Gifts') do |g, t|

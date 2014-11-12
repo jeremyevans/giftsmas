@@ -1,13 +1,26 @@
-div.navbar-inner {
-  background-color: #141;
-  background-image: none;
-  filter: none;
+.navbar-default {
+  color: white;
+  &, .dropdown-menu, .dropdown-menu li a:hover {
+    background-color: #141;
+  }
+  .navbar-brand, .navbar-nav > li > a, .navbar-nav .open .dropdown-menu > li > a {
+    &, &:hover, &:visited { color: white; }
+    &:hover { text-decoration: underline; }
+  }
+  .navbar-form {
+    padding: 0;
+    border-width: 0;
+    margin-right: 20px;
+  }
+  .collapse.in input {
+    width: auto;
+    margin: auto;
+  }
 }
 
 a {
-  &, &:link { color: #FFF }
-  &:visited { color: #555}
-  &:hover { color: #C00}
+  &, &:hover, &:visited { color: #555 }
+  &:hover { text-decoration: underline; }
 }
 
 .table-striped a:link { color: #888}
@@ -33,11 +46,19 @@ div.giftpeople input, div.giftpeople label { display: inline; }
 
 table#recent_gifts a { color: #600; }
 
-input, select, textarea { width: auto; }
+table.table, input, select, textarea { width: auto; }
 
 table.formtable td.attribute { text-align: right; }
 
 ul.scaffold_associated_records_list li form { display: inline; }
+
+#content .nav a:visited, #content .nav a, #autoforme_content .pager a {color: #555;}
+
+#autoforme_content a.btn {color: white;}
+#autoforme_content form {
+  label[for] { min-width: 200px;}
+  input[type=date] { line-height: normal;}
+}
 
 @media print {
     div.navbar { display: none; }
@@ -47,6 +68,3 @@ ul.scaffold_associated_records_list li form { display: inline; }
     }
     .persongifts { page-break-after: always; }
 }
-
-#autoforme_content a.btn {color: white;}
-#content .nav a:visited, #content .nav a, #autoforme_content .pager a {color: #555;}

@@ -22,7 +22,7 @@ class Giftsmas < Roda
   use Rack::Protection
 
   plugin :h
-  plugin :render, :escape=>true
+  plugin :render, :escape=>true, :cache=>ENV['RACK_ENV'] != 'development'
   plugin :assets,
     :css=>%w'bootstrap.min.css application.scss',
     :css_opts=>{:style=>:compressed, :cache=>false},

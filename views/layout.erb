@@ -2,22 +2,23 @@
 <html>
 
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<meta http-equiv="Content-Type" content="text/html; charset=utf8" />
 <title>Giftsmas<%= " - #{@title || @autoforme_action.title}" if @title || @autoforme_action %></title>
 <%== assets(:css) %>
 </head>
 
 <body>
-<div class="navbar">
-  <div class="navbar-inner">
-    <div class="container">
+<nav class="navbar navbar-default" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
       <% if current_event %>
-        <a href="/add_gift/<%= @event.id %>" class="brand">Giftsmas: <%= @event.name %></a>
+        <a href="/add_gift/<%= @event.id %>" class="navbar-brand">Giftsmas: <%= @event.name %></a>
       <% else %>
-        <a href="/choose_event" class="brand">Giftsmas</a>
+        <a href="/choose_event" class="navbar-brand">Giftsmas</a>
       <% end %>
+    </div>
 
-      <ul class="nav">
+      <ul class="nav navbar-nav">
         <% if @event %>
           <li><a href="/Event/mtm_edit/<%= @event.id %>?association=receivers">Associate Receivers</a></li>
           <li><a href="/Event/mtm_edit/<%= @event.id %>?association=senders">Associate Senders</a></li>
@@ -30,16 +31,17 @@
           <% end %>
           <li><a href="/manage">Manage</a></li>
         <% end %>
-        </ul>
+      </ul>
+
       <% if @user %>
-        <form action="/logout" class="button_to" method="post">
+        <form action="/logout" class="navbar-form" method="post">
           <%== csrf_tag %>
-          <input class="btn btn-warning pull-right" type="submit" value="Logout" />
+          <input class="btn btn-warning pull-right form-control" type="submit" value="Logout" />
         </form>
       <% end %>
     </div>
   </div>
-</div>
+</nav>
 
 <div class="container" id="content">
 <%== "<h1>#{h @title}</h1>" if @title %>
