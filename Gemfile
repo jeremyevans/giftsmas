@@ -5,7 +5,7 @@ gem "autoforme", '>= 1.0.1'
 gem "sequel"
 gem "sequel_pg"
 gem "sequel_postgresql_triggers"
-gem "roda", '>= 1.1.0'
+gem "roda", '>= 1.2.0'
 gem "erubis"
 gem "tilt"
 gem "sass"
