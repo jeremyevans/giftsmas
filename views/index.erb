@@ -1,19 +1,7 @@
 <% @title = 'Add Gift' %>
 
 <form method='post' action='/add_gift/<%= @event.id %>' class="form-horizontal">
-  <%== csrf_tag %>
-  <fieldset>
-    <div class="form-group">
-      <div class="col-md-1">
-        <input type="submit" class="btn btn-default" value="Add Gift"/>
-      </div>
-      <label class="col-md-1 control-label" for="gift">Gift</label>
-      <div class="col-md-10 controls">
-        <input type="text" class="form-control" name="gift" id="gift" size="60" /><br />
-      </div>
-    </div>
-  </fieldset>
-
+<%== csrf_tag %>
   <div class="row">
     <% [:senders, :receivers].each do |sr|
     x = @event.send(sr)
@@ -27,6 +15,18 @@
     <% end end %>
     <div class="col-md-6">
       <div class="row">
+        <fieldset>
+          <div class="form-group">
+            <label class="col-md-1 control-label" for="gift">Gift</label>
+            <div class="col-md-9 controls">
+              <input type="text" class="form-control" name="gift" id="gift" size="60" /><br />
+            </div>
+            <div class="col-md-2">
+              <input type="submit" class="btn btn-default" value="Add Gift"/>
+            </div>
+          </div>
+        </fieldset>
+
         <div class="form-group">
           <label class="col-md-4 control-label" for="new_senders">New Senders</label>
           <div class="col-md-8">
