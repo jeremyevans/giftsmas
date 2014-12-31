@@ -1,0 +1,4 @@
+<% @title = 'Comparative Reports' %>
+
+<% h = @event_ds.compare_by_receiver %>
+<%== Thamble.table(h[:rows], :headers=>h[:headers], :table=>{:class=>'table table-bordered table-striped'}, :caption=>'Gifts By Receiver') %>

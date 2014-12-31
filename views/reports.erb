@@ -1,5 +1,6 @@
 <% @title = 'Reports' %>
 <ul>
+  <li><a href="/reports/compare">Comparative</a></li>
   <li><a href="/reports/chronological/<%= @event.id %>">In Chronological Order</a></li>
   <li><a href="/reports/by_receiver/<%= @event.id %>">By Receiver</a></li>
   <li><a href="/reports/by_sender/<%= @event.id %>">By Sender</a></li>
@@ -7,3 +8,4 @@
   <li><a href="/reports/crosstab/<%= @event.id %>">Summary Crosstab</a></li>
   <li><a href="/reports/thank_yous/<%= @event.id %>">Thank You Notes</a></li>
 </ul>
+

@@ -194,6 +194,11 @@ class Giftsmas < Roda
         @receivers = @event.thank_you_notes
         :report_thank_yous
       end
+
+      r.is 'compare' do
+        @event_ds = Event.where(:user_id=>@user.id).exclude(:name=>'Test')
+        :report_compare
+      end
     end
     
     r.root do

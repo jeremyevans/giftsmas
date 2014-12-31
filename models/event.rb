@@ -4,6 +4,36 @@ class Event < Sequel::Model
   many_to_many :senders, :class=>:Person, :join_table=>:event_senders, :right_key=>:person_id, :order=>:name
   many_to_many :receivers, :class=>:Person, :join_table=>:event_receivers, :right_key=>:person_id, :order=>:name
 
+  dataset_module do
+    def compare_by_receiver
+      ds = self
+      events = ds.to_hash(:id, :name)
+      gift_ds = Gift.where(:event_id=>ds.select(:id)).naked
+      receiver_ds = DB[:gift_receivers].select(:person_id)
+  
+      person_ds = Person.where(:id=>receiver_ds.where(:gift_id=>gift_ds.select(:id))).
+        order(:name)
+
+      people = person_ds.to_hash(:id, :name)
+      receivers = person_ds.select_map(:id)
+  
+      select_receivers = receivers.map do |id|
+        Sequel.function(:sum, Sequel.case({{id=>receiver_ds.where(:gift_id=>:gifts__id)}=>1}, 0)).as(id.to_s)
+      end
+  
+      gifts_by_receiver = gift_ds.
+        group(:event_id).
+        select_map([:event_id] + select_receivers).
+        each do |r|
+          r[0] = events[r[0]]
+          r << r[1..-1].inject(:+)
+          r << r[-1]/r[1..-2].reject{|x| x == 0}.length
+        end.sort
+      
+      {:rows=>gifts_by_receiver, :headers=>['Event'] + receivers.map{|id| people[id]} + ['Total', 'Average']}
+    end
+  end
+
   def gifts_by_receiver
     receivers = Hash.new{|h,k| h[k] = []}
     gifts.each do |g|
