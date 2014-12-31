@@ -1,6 +1,6 @@
 class Event < Sequel::Model
   many_to_one :user
-  one_to_many :gifts, :eager=>[:receivers, :senders], :order=>:inserted_at
+  one_to_many :gifts, :eager=>[:receivers, :senders], :order=>:id
   many_to_many :senders, :class=>:Person, :join_table=>:event_senders, :right_key=>:person_id, :order=>:name
   many_to_many :receivers, :class=>:Person, :join_table=>:event_receivers, :right_key=>:person_id, :order=>:name
 
