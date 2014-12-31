@@ -250,6 +250,11 @@ describe "Giftsmas" do
     click_on 'Reports'
     click_on 'Thank You Notes'
     page.all("#content > ul > li > ul > li").map{|s| s.text.gsub(/\s+/, '')}.should == %w"P1G1G2 P3G4 P1G3 P3G3G4"
+
+    click_on 'Reports'
+    click_on 'Comparative'
+    page.all("table th").map{|s| s.text}.should == %w'Event P2 P4 Total Average'
+    page.all("table tbody tr").map{|s| s.all('td').map{|s2| s2.text}}.should == [%w'Christmas 3 2 5 2']
   end
 
   specify "users can't see other other users events, people, or gifts" do

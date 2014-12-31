@@ -19,6 +19,19 @@ describe Event do
     @event.receivers.should == []
   end
 
+  specify ".compare_by_receiver should give a hash of rows and headers for gifts received in multiple events" do
+    Event.compare_by_receiver.should == {:rows=>[], :headers=>%w'Event Total Average'}
+    Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
+    Event.compare_by_receiver.should == {:rows=>[['Christmas', 1, 1, 1]], :headers=>%w'Event R Total Average'}
+    Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
+    Event.compare_by_receiver.should == {:rows=>[['Christmas', 2, 2, 2]], :headers=>%w'Event R Total Average'}
+    Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
+    Event.compare_by_receiver.should == {:rows=>[['Christmas', 2, 1, 3, 1]], :headers=>%w'Event R S Total Average'}
+    event = Event.create(:name=>'Birthday', :user_id=>@user.id)
+    Gift.add(event, 'G4', [@sender.id], [@receiver.id], [], [])
+    Event.compare_by_receiver.should == {:rows=>[['Birthday', 1, 0, 1, 1], ['Christmas', 2, 1, 3, 1]], :headers=>%w'Event R S Total Average'}
+  end
+
   specify "#gifts_by_receiver should be a sorted hash of receivers and gifts received" do
     @event.gifts_by_receiver.should == []
     g = Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
