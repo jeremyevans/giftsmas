@@ -1,5 +1,5 @@
 GEM
-  remote: https://api.rubygems.org/
+  remote: https://rubygems.org/
   specs:
     autoforme (1.0.2)
       forme (>= 0.9.2)
@@ -9,17 +9,17 @@ GEM
     erubis (2.7.0)
     forme (1.2.0)
     kgio (2.9.2)
-    pg (0.17.1)
-    rack (1.5.2)
+    pg (0.18.0)
+    rack (1.6.0)
     rack-protection (1.5.3)
       rack
     rack_csrf (2.5.0)
       rack (>= 1.1.0)
     raindrops (0.10.0)
-    roda (1.2.0)
+    roda (2.0.0)
       rack
     sass (3.4.9)
-    sequel (4.17.0)
+    sequel (4.19.0)
     sequel_pg (1.6.11)
       pg (>= 0.8.0)
       sequel (>= 3.39.0)

@@ -36,7 +36,6 @@ class Giftsmas < Roda
   plugin :not_found
   plugin :symbol_matchers
   plugin :symbol_views
-  plugin :static_path_info
 
   def html_opts(hash)
     hash.map{|k,v| "#{k}=\"#{h(v)}\""}.join(' ')
@@ -233,4 +232,6 @@ class Giftsmas < Roda
 
     autoforme
   end
+
+  freeze
 end
