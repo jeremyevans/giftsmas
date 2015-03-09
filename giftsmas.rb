@@ -3,7 +3,6 @@ require 'rubygems'
 require 'roda'
 require './models'
 require 'thamble'
-require 'rack/protection'
 
 PersonSplitter = /,/ unless defined?(PersonSplitter)
 SECRET_FILE = File.join(File.dirname(__FILE__), 'giftsmas.secret')
@@ -19,7 +18,6 @@ class Giftsmas < Roda
   use Rack::Session::Cookie, :secret=>SECRET
   plugin :csrf
   use Rack::Static, :urls=>%w'/favicon.ico', :root=>'public'
-  use Rack::Protection
 
   plugin :h
   plugin :render, :escape=>true, :cache=>ENV['RACK_ENV'] != 'development'

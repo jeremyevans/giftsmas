@@ -11,15 +11,13 @@ GEM
     kgio (2.9.2)
     pg (0.18.0)
     rack (1.6.0)
-    rack-protection (1.5.3)
-      rack
     rack_csrf (2.5.0)
       rack (>= 1.1.0)
     raindrops (0.10.0)
     roda (2.0.0)
       rack
     sass (3.4.9)
-    sequel (4.19.0)
+    sequel (4.20.0)
     sequel_pg (1.6.11)
       pg (>= 0.8.0)
       sequel (>= 3.39.0)
@@ -41,7 +39,6 @@ DEPENDENCIES
   bcrypt-ruby
   erubis
   pg
-  rack-protection
   rack_csrf
   roda (>= 1.2.0)
   sass

@@ -9,7 +9,6 @@ gem "roda", '>= 1.2.0'
 gem "erubis"
 gem "tilt"
 gem "sass"
-gem "rack-protection"
 gem "bcrypt-ruby"
 gem "rack_csrf"
 gem "thamble"
