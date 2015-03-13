@@ -17,7 +17,7 @@ end
 class Giftsmas < Roda
   use Rack::Session::Cookie, :secret=>SECRET
   plugin :csrf
-  use Rack::Static, :urls=>%w'/favicon.ico', :root=>'public'
+  plugin :static, %w'/favicon.ico'
 
   plugin :h
   plugin :render, :escape=>true, :cache=>ENV['RACK_ENV'] != 'development'
