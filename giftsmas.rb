@@ -230,6 +230,4 @@ class Giftsmas < Roda
 
     autoforme
   end
-
-  freeze
 end
