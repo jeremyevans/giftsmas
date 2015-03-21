@@ -145,12 +145,12 @@ describe "Giftsmas" do
 
     select 'Birthday'
     click_on 'Choose Event'
-    page.find('.navbar a').text.should == 'Giftsmas: Birthday'
+    page.find('.navbar a.navbar-brand').text.should == 'Giftsmas: Birthday'
 
     click_on 'Change Event'
     select 'Christmas'
     click_on 'Choose Event'
-    page.find('.navbar a').text.should == 'Giftsmas: Christmas'
+    page.find('.navbar a.navbar-brand').text.should == 'Giftsmas: Christmas'
   end
 
   specify "/logout should log the user out" do
@@ -178,8 +178,9 @@ describe "Giftsmas" do
     
     %w'event gift person'.each do |x|
       %w'browse new delete edit merge search show'.each do |y|
-        visit("/manage/#{y}_#{x}")
-        page.find('title').should_not be_nil
+        model_name = x.tap do |a| a[0] = a[0].upcase end
+        visit("#{model_name}/#{y}")
+        page.title.should_not be_nil
       end
     end
   end
@@ -269,12 +270,12 @@ describe "Giftsmas" do
     select 'Christmas'
     click_button 'Choose Event'
     click_link 'Associate Receivers'
-    page.all("option").should == []
+    page.all("option").size.should == 0
     click_link 'Associate Senders'
-    page.all("option").should == []
+    page.all("option").size.should == 0
     click_link 'Manage'
     click_link 'Events'
-    click_link 'Edit'
+    click_link 'Edit', match: :first
     page.all("option").map{|s| s.text}.should == ['', 'Christmas']
     click_link 'Manage'
     click_link 'Gifts'
@@ -287,7 +288,7 @@ describe "Giftsmas" do
     click_link 'Giftsmas'
     select 'Christmas'
     click_button 'Choose Event'
-    page.all("option").should == []
+    page.all("option").size.should == 0
     visit("/reports/chronological")
     page.find('#content').text.should_not =~ /J[EPG]/
     visit("/reports/by_sender")
