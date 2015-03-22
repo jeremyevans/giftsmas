@@ -13,3 +13,8 @@ gem "bcrypt-ruby"
 gem "rack_csrf"
 gem "thamble"
 gem "unicorn"
+
+group :development, :test do
+  gem "capybara", '>= 1.1.2'
+  gem "rspec", '>= 1.3'
+end
