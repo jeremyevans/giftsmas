@@ -3,6 +3,7 @@ require "rake/clean"
 
 begin
   begin
+    raise LoadError if ENV['RSPEC1']
     # RSpec 2+
     require "rspec/core/rake_task"
     spec_class = RSpec::Core::RakeTask
