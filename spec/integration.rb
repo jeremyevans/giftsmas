@@ -10,6 +10,9 @@ require 'giftsmas'
 require File.expand_path("rspec_helper", File.dirname(__FILE__))
 
 Capybara.app = Giftsmas.app
+Giftsmas.plugin :error_handler do |e|
+  raise e
+end
 
 class RSPEC_EXAMPLE_GROUP
   include Rack::Test::Methods
@@ -176,11 +179,10 @@ describe "Giftsmas" do
     select 'Allyson'
     click_on 'Update'
     
-    %w'event gift person'.each do |x|
-      %w'browse new delete edit merge search show'.each do |y|
-        model_name = x.tap do |a| a[0] = a[0].upcase end
-        visit("#{model_name}/#{y}")
-        page.title.should_not be_nil
+    %w'Event Gift Person'.each do |x|
+      %w'browse delete edit search show'.each do |y|
+        visit("/#{x}/#{y}")
+        page.html.should =~ /Giftsmas - #{x} - #{y.capitalize}/
       end
     end
   end
@@ -275,7 +277,7 @@ describe "Giftsmas" do
     page.all("option").size.should == 0
     click_link 'Manage'
     click_link 'Events'
-    click_link 'Edit', match: :first
+    visit "/Event/edit"
     page.all("option").map{|s| s.text}.should == ['', 'Christmas']
     click_link 'Manage'
     click_link 'Gifts'
