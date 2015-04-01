@@ -144,8 +144,8 @@ class Giftsmas < Roda
       end
 
       r.post do
-        new_senders = request['new_senders'].split(PersonSplitter).map{|name| name.strip}.reject{|name| name.empty?}
-        new_receivers = request['new_receivers'].split(PersonSplitter).map{|name| name.strip}.reject{|name| name.empty?}
+        new_senders = request['new_senders'].split(PersonSplitter).map(&:strip).reject(&:empty?)
+        new_receivers = request['new_receivers'].split(PersonSplitter).map(&:strip).reject(&:empty?)
         senders = request['senders'].is_a?(Hash) ? request['senders'].keys : []
         receivers = request['receivers'].is_a?(Hash) ? request['receivers'].keys : []
         if gift = Gift.add(@event, request['gift'].to_s.strip, senders, receivers, new_senders, new_receivers)

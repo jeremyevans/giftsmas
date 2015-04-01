@@ -84,7 +84,7 @@ class Event < Sequel::Model
       end
     end
     receivers.values.each do |h| 
-      h.values.each{|h2| h2.sort}
+      h.values.each(&:sort)
       h.sort
     end
     receivers.sort.map{|k, v| [k, v.sort.map{|k2, v2| [k2, v2.sort]}]}
