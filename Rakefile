@@ -1,37 +1,19 @@
 require "rake"
 require "rake/clean"
+require 'rake/testtask'
 
-begin
-  begin
-    raise LoadError if ENV['RSPEC1']
-    # RSpec 2+
-    require "rspec/core/rake_task"
-    spec_class = RSpec::Core::RakeTask
-    spec_files_meth = :pattern=
-  rescue LoadError
-    # RSpec 1
-    require "spec/rake/spectask"
-    spec_class = Spec::Rake::SpecTask
-    spec_files_meth = :spec_files=
-  end
-
-  desc "Run the unit and integration specs"
-  task :default=>[:spec, :integration]
-
-  desc "Run unit tests"
-  spec_class.new("spec") do |t|
-    t.send spec_files_meth, ["spec/unit.rb"]
-  end
-
-  desc "Run integration tests"
-  spec_class.new("integration") do |t|
-    t.send spec_files_meth, ["spec/integration.rb"]
-  end
-rescue LoadError
-  task :default do
-    puts "Must install rspec to run the default task (which runs specs)"
-  end
+desc "Run model specs"
+task :model_spec do
+  sh %{#{FileUtils::RUBY} -I lib spec/unit.rb}
 end
+
+desc "Run web specs"
+task :web_spec do
+  sh %{#{FileUtils::RUBY} -I lib spec/integration.rb}
+end
+
+desc "Run model and web specs"
+task :default=>[:model_spec, :web_spec]
 
 namespace :assets do
   desc "Precompile the assets"

@@ -3,21 +3,18 @@ GIFTSMAS_ENV = :test
 require 'rubygems'
 require 'capybara'
 require 'capybara/dsl'
-require 'capybara/rspec/matchers'
 require 'rack/test'
-$: << File.dirname(File.dirname(__FILE__))
-require 'giftsmas'
-require File.expand_path("rspec_helper", File.dirname(__FILE__))
+require './giftsmas'
+require './spec/spec_helper'
 
 Capybara.app = Giftsmas.app
 Giftsmas.plugin :error_handler do |e|
   raise e
 end
 
-class RSPEC_EXAMPLE_GROUP
+class Minitest::HooksSpec
   include Rack::Test::Methods
   include Capybara::DSL
-  include Capybara::RSpecMatchers
 
   def app
     APP
@@ -45,11 +42,11 @@ end
 describe "Giftsmas" do
   specify "should handle pages that require logins" do
     visit('/')
-    page.current_path.should == '/login'
+    page.current_path.must_equal '/login'
     visit('/choose_event')
-    page.current_path.should == '/login'
+    page.current_path.must_equal '/login'
     visit('/manage')
-    page.current_path.should == '/login'
+    page.current_path.must_equal '/login'
   end
 
   specify "should handle an incorrect login" do
@@ -58,20 +55,20 @@ describe "Giftsmas" do
     fill_in 'user', :with=>'jeremy'
     fill_in 'password', :with=>'invalid'
     click_on 'Login'
-    current_path.should == '/login'
+    current_path.must_equal '/login'
 
     fill_in 'user', :with=>'jeremy2'
     fill_in 'password', :with=>'valid'
     click_on 'Login'
-    current_path.should == '/login'
+    current_path.must_equal '/login'
   end
 
   specify "should handle the login process and creating event" do
     event_page
 
     event = Event.first
-    event.name.should == 'Christmas'
-    current_path.should =~ %r{\A/add_gift/\d+\z}
+    event.name.must_equal 'Christmas'
+    current_path.must_match %r{\A/add_gift/\d+\z}
   end
 
   specify "should not add gifts without a sender, receiver, and a name" do
@@ -81,21 +78,21 @@ describe "Giftsmas" do
     fill_in 'new_receivers', :with=>'Allyson'
     fill_in 'gift', :with=>''
     click_on 'Add Gift'
-    Gift.count.should == 0
+    Gift.count.must_equal 0
 
     click_link 'Giftsmas: Christmas'
     fill_in 'new_senders', :with=>'Jeremy'
     fill_in 'new_receivers', :with=>''
     fill_in 'gift', :with=>'Jewelry'
     click_on 'Add Gift'
-    Gift.count.should == 0
+    Gift.count.must_equal 0
 
     click_link 'Giftsmas: Christmas'
     fill_in 'new_senders', :with=>''
     fill_in 'new_receivers', :with=>'Allyson'
     fill_in 'gift', :with=>'Jewelry'
     click_on 'Add Gift'
-    Gift.count.should == 0
+    Gift.count.must_equal 0
   end
 
   specify "should add gifts correctly" do
@@ -105,16 +102,16 @@ describe "Giftsmas" do
     fill_in 'new_receivers', :with=>'Allyson'
     fill_in 'gift', :with=>'Jewelry'
     click_on 'Add Gift'
-    Gift.count.should == 1
+    Gift.count.must_equal 1
     gift = Gift.first
-    gift.name.should == 'Jewelry'
-    gift.senders.map{|s| s.name}.should == %w'Jeremy'
-    gift.receivers.map{|s| s.name}.should == %w'Allyson'
+    gift.name.must_equal 'Jewelry'
+    gift.senders.map{|s| s.name}.must_equal %w'Jeremy'
+    gift.receivers.map{|s| s.name}.must_equal %w'Allyson'
     event = gift.event
-    event.senders.map{|s| s.name}.should == %w'Jeremy'
-    event.receivers.map{|s| s.name}.should == %w'Allyson'
+    event.senders.map{|s| s.name}.must_equal %w'Jeremy'
+    event.receivers.map{|s| s.name}.must_equal %w'Allyson'
 
-    page.find("div.alert").text.should == 'Gift Added'
+    page.find("div.alert").text.must_equal 'Gift Added'
 
     check 'Jeremy'
     check 'Allyson'
@@ -123,13 +120,13 @@ describe "Giftsmas" do
     fill_in 'gift', :with=>'FooBar'
     click_on 'Add Gift'
 
-    Gift.count.should == 2
+    Gift.count.must_equal 2
     gift = Gift[:name=>'FooBar']
-    gift.name.should == 'FooBar'
-    gift.senders.map{|x| x.name}.should == %w'Bar Foo Jeremy'
-    gift.receivers.map{|x| x.name}.should == %w'Allyson Baz Qux'
+    gift.name.must_equal 'FooBar'
+    gift.senders.map{|x| x.name}.must_equal %w'Bar Foo Jeremy'
+    gift.receivers.map{|x| x.name}.must_equal %w'Allyson Baz Qux'
 
-    page.all("td").map{|s| s.text.chomp}.should == ["FooBar", "Bar, Foo, Jeremy", "Allyson, Baz, Qux", "Jewelry", "Jeremy", "Allyson"]
+    page.all("td").map{|s| s.text.chomp}.must_equal ["FooBar", "Bar, Foo, Jeremy", "Allyson, Baz, Qux", "Jewelry", "Jeremy", "Allyson"]
     click_link 'FooBar'
     click_button 'Update'
     click_link 'Giftsmas: Christmas'
@@ -148,12 +145,12 @@ describe "Giftsmas" do
 
     select 'Birthday'
     click_on 'Choose Event'
-    page.find('.navbar a.navbar-brand').text.should == 'Giftsmas: Birthday'
+    page.find('.navbar a.navbar-brand').text.must_equal 'Giftsmas: Birthday'
 
     click_on 'Change Event'
     select 'Christmas'
     click_on 'Choose Event'
-    page.find('.navbar a.navbar-brand').text.should == 'Giftsmas: Christmas'
+    page.find('.navbar a.navbar-brand').text.must_equal 'Giftsmas: Christmas'
   end
 
   specify "/logout should log the user out" do
@@ -161,7 +158,7 @@ describe "Giftsmas" do
     login
     click_on 'Logout'
     visit('/')
-    page.current_path.should == '/login'
+    page.current_path.must_equal '/login'
   end
 
   specify "scaffolded forms should be available" do
@@ -182,7 +179,7 @@ describe "Giftsmas" do
     %w'Event Gift Person'.each do |x|
       %w'browse delete edit search show'.each do |y|
         visit("/#{x}/#{y}")
-        page.html.should =~ /Giftsmas - #{x} - #{y.capitalize}/
+        page.html.must_match /Giftsmas - #{x} - #{y.capitalize}/
       end
     end
   end
@@ -208,56 +205,56 @@ describe "Giftsmas" do
 
     click_on 'Reports'
     click_on 'Chronological'
-    page.all("table th").map{|s| s.text}.should == %w'Time Gift Senders Receivers'
-    page.all("table tbody tr").map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.should == [%w'G1 P1 P2', %w'G2 P1 P2', ['G3', 'P1, P3', 'P4'], ['G4', 'P3', 'P2, P4']]
+    page.all("table th").map{|s| s.text}.must_equal %w'Time Gift Senders Receivers'
+    page.all("table tbody tr").map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.must_equal [%w'G1 P1 P2', %w'G2 P1 P2', ['G3', 'P1, P3', 'P4'], ['G4', 'P3', 'P2, P4']]
 
     click_on 'Reports'
     click_on 'By Receiver'
-    page.all('table caption').map{|s| s.text}.should == %w'P2 P4'
+    page.all('table caption').map{|s| s.text}.must_equal %w'P2 P4'
     tables = page.all('table')
     table = tables.first
-    table.all('th').map{|s| s.text}.should == ['Time', 'Gift', 'Senders', 'Other Receivers']
-    table.all('tbody tr').map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.should == [['G1', 'P1', ''], ['G2', 'P1', ''], %w'G4 P3 P4']
+    table.all('th').map{|s| s.text}.must_equal ['Time', 'Gift', 'Senders', 'Other Receivers']
+    table.all('tbody tr').map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.must_equal [['G1', 'P1', ''], ['G2', 'P1', ''], %w'G4 P3 P4']
     table = tables.last
-    table.all('th').map{|s| s.text}.should == ['Time', 'Gift', 'Senders', 'Other Receivers']
-    table.all('tbody tr').map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.should == [['G3', 'P1, P3', ''], %w'G4 P3 P2']
+    table.all('th').map{|s| s.text}.must_equal ['Time', 'Gift', 'Senders', 'Other Receivers']
+    table.all('tbody tr').map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.must_equal [['G3', 'P1, P3', ''], %w'G4 P3 P2']
 
     click_on 'Reports'
     click_on 'By Sender'
-    page.all('table caption').map{|s| s.text}.should == %w'P1 P3'
+    page.all('table caption').map{|s| s.text}.must_equal %w'P1 P3'
     tables = page.all('table')
     table = tables.first
-    table.all('th').map{|s| s.text}.should == ['Time', 'Gift', 'Receivers', 'Other Senders']
-    table.all('tbody tr').map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.should == [['G1', 'P2', ''], ['G2', 'P2', ''], %w'G3 P4 P3']
+    table.all('th').map{|s| s.text}.must_equal ['Time', 'Gift', 'Receivers', 'Other Senders']
+    table.all('tbody tr').map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.must_equal [['G1', 'P2', ''], ['G2', 'P2', ''], %w'G3 P4 P3']
     table = tables.last
-    table.all('th').map{|s| s.text}.should == ['Time', 'Gift', 'Receivers', 'Other Senders']
-    table.all('tbody tr').map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.should == [%w'G3 P4 P1', ['G4', 'P2, P4', '']]
+    table.all('th').map{|s| s.text}.must_equal ['Time', 'Gift', 'Receivers', 'Other Senders']
+    table.all('tbody tr').map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.must_equal [%w'G3 P4 P1', ['G4', 'P2, P4', '']]
 
     click_on 'Reports'
     click_on 'Summary'
-    page.find('h3').text.should == 'Total Number of Gifts: 4'
-    page.all('table caption').map{|s| s.text.chomp}.should == ['Totals By Sender', 'Totals By Receiver']
+    page.find('h3').text.must_equal 'Total Number of Gifts: 4'
+    page.all('table caption').map{|s| s.text.chomp}.must_equal ['Totals By Sender', 'Totals By Receiver']
     tables = page.all('table')
     table = tables.first
-    table.all('th').map{|s| s.text}.should == ['Sender', 'Number of Gifts']
-    table.all('tbody tr').map{|s| s.all('td').map{|s2| s2.text}}.should == [%w'P1 3', %w'P3 2']
+    table.all('th').map{|s| s.text}.must_equal ['Sender', 'Number of Gifts']
+    table.all('tbody tr').map{|s| s.all('td').map{|s2| s2.text}}.must_equal [%w'P1 3', %w'P3 2']
     table = tables.last
-    table.all('th').map{|s| s.text}.should == ['Receiver', 'Number of Gifts']
-    table.all('tbody tr').map{|s| s.all('td').map{|s2| s2.text}}.should == [%w'P2 3', %w'P4 2']
+    table.all('th').map{|s| s.text}.must_equal ['Receiver', 'Number of Gifts']
+    table.all('tbody tr').map{|s| s.all('td').map{|s2| s2.text}}.must_equal [%w'P2 3', %w'P4 2']
 
     click_on 'Reports'
     click_on 'Summary Crosstab'
-    page.all("table th").map{|s| s.text}.should == %w'Sender\Receiver P2 P4'
-    page.all("table tbody tr").map{|s| s.all('td').map{|s2| s2.text}}.should == [%w'P1 2 1', %w'P3 1 2']
+    page.all("table th").map{|s| s.text}.must_equal %w'Sender\Receiver P2 P4'
+    page.all("table tbody tr").map{|s| s.all('td').map{|s2| s2.text}}.must_equal [%w'P1 2 1', %w'P3 1 2']
 
     click_on 'Reports'
     click_on 'Thank You Notes'
-    page.all("#content > ul > li > ul > li").map{|s| s.text.gsub(/\s+/, '')}.should == %w"P1G1G2 P3G4 P1G3 P3G3G4"
+    page.all("#content > ul > li > ul > li").map{|s| s.text.gsub(/\s+/, '')}.must_equal %w"P1G1G2 P3G4 P1G3 P3G3G4"
 
     click_on 'Reports'
     click_on 'Comparative'
-    page.all("table th").map{|s| s.text}.should == %w'Event P2 P4 Total Average'
-    page.all("table tbody tr").map{|s| s.all('td').map{|s2| s2.text}}.should == [%w'Christmas 3 2 5 2']
+    page.all("table th").map{|s| s.text}.must_equal %w'Event P2 P4 Total Average'
+    page.all("table tbody tr").map{|s| s.all('td').map{|s2| s2.text}}.must_equal [%w'Christmas 3 2 5 2']
   end
 
   specify "users can't see other other users events, people, or gifts" do
@@ -272,36 +269,36 @@ describe "Giftsmas" do
     select 'Christmas'
     click_button 'Choose Event'
     click_link 'Associate Receivers'
-    page.all("option").size.should == 0
+    page.all("option").size.must_equal 0
     click_link 'Associate Senders'
-    page.all("option").size.should == 0
+    page.all("option").size.must_equal 0
     click_link 'Manage'
     click_link 'Events'
     visit "/Event/edit"
-    page.all("option").map{|s| s.text}.should == ['', 'Christmas']
+    page.all("option").map{|s| s.text}.must_equal ['', 'Christmas']
     click_link 'Manage'
     click_link 'Gifts'
     click_link 'Edit'
-    page.all("option").map{|s| s.text}.should == ['']
+    page.all("option").map{|s| s.text}.must_equal ['']
     click_link 'Manage'
     click_link 'People'
     click_link 'Edit'
-    page.all("option").map{|s| s.text}.should == ['']
+    page.all("option").map{|s| s.text}.must_equal ['']
     click_link 'Giftsmas'
     select 'Christmas'
     click_button 'Choose Event'
-    page.all("option").size.should == 0
+    page.all("option").size.must_equal 0
     visit("/reports/chronological")
-    page.find('#content').text.should_not =~ /J[EPG]/
+    page.find('#content').text.wont_match /J[EPG]/
     visit("/reports/by_sender")
-    page.find('#content').text.should_not =~ /J[EPG]/
+    page.find('#content').text.wont_match /J[EPG]/
     visit("/reports/by_receiver")
-    page.find('#content').text.should_not =~ /J[EPG]/
+    page.find('#content').text.wont_match /J[EPG]/
     visit("/reports/summary")
-    page.find('#content').text.should_not =~ /J[EPG]/
+    page.find('#content').text.wont_match /J[EPG]/
     visit("/reports/crosstab")
-    page.find('#content').text.should_not =~ /J[EPG]/
+    page.find('#content').text.wont_match /J[EPG]/
     visit("/reports/thank_yous")
-    page.find('#content').text.should_not =~ /J[EPG]/
+    page.find('#content').text.wont_match /J[EPG]/
   end
 end

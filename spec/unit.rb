@@ -1,211 +1,227 @@
-#!/usr/local/bin/spec
 GIFTSMAS_ENV = :test
-$: << File.dirname(File.dirname(__FILE__))
-require 'models'
-require File.expand_path("rspec_helper", File.dirname(__FILE__))
+
+require './models'
+require './spec/spec_helper'
 
 describe Event do
-  before do
+  before(:all) do
     @user = User.create(:name=>'test', :password=>'')
     @event = Event.create(:name=>'Christmas', :user_id=>@user.id)
     @sender = Person.create(:name=>'S', :user_id=>@user.id)
     @receiver = Person.create(:name=>'R', :user_id=>@user.id)
   end
-
-  specify "associations should be correct" do
-    @event.user.class.should == User
-    @event.gifts.should == []
-    @event.senders.should == []
-    @event.receivers.should == []
+  before do
+    @user = User.call(@user.values.dup)
+    @event = Event.call(@event.values.dup)
+    @sender = Person.call(@sender.values.dup)
+    @receiver= Person.call(@receiver.values.dup)
   end
 
-  specify ".compare_by_receiver should give a hash of rows and headers for gifts received in multiple events" do
-    Event.compare_by_receiver.should == {:rows=>[], :headers=>%w'Event Total Average'}
+  it "associations should be correct" do
+    @event.user.class.must_equal User
+    @event.gifts.must_equal []
+    @event.senders.must_equal []
+    @event.receivers.must_equal []
+  end
+
+  it ".compare_by_receiver should give a hash of rows and headers for gifts received in multiple events" do
+    Event.compare_by_receiver.must_equal :rows=>[], :headers=>%w'Event Total Average'
     Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
-    Event.compare_by_receiver.should == {:rows=>[['Christmas', 1, 1, 1]], :headers=>%w'Event R Total Average'}
+    Event.compare_by_receiver.must_equal :rows=>[['Christmas', 1, 1, 1]], :headers=>%w'Event R Total Average'
     Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
-    Event.compare_by_receiver.should == {:rows=>[['Christmas', 2, 2, 2]], :headers=>%w'Event R Total Average'}
+    Event.compare_by_receiver.must_equal :rows=>[['Christmas', 2, 2, 2]], :headers=>%w'Event R Total Average'
     Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
-    Event.compare_by_receiver.should == {:rows=>[['Christmas', 2, 1, 3, 1]], :headers=>%w'Event R S Total Average'}
+    Event.compare_by_receiver.must_equal :rows=>[['Christmas', 2, 1, 3, 1]], :headers=>%w'Event R S Total Average'
     event = Event.create(:name=>'Birthday', :user_id=>@user.id)
     Gift.add(event, 'G4', [@sender.id], [@receiver.id], [], [])
-    Event.compare_by_receiver.should == {:rows=>[['Birthday', 1, 0, 1, 1], ['Christmas', 2, 1, 3, 1]], :headers=>%w'Event R S Total Average'}
+    Event.compare_by_receiver.must_equal :rows=>[['Birthday', 1, 0, 1, 1], ['Christmas', 2, 1, 3, 1]], :headers=>%w'Event R S Total Average'
   end
 
-  specify "#gifts_by_receiver should be a sorted hash of receivers and gifts received" do
-    @event.gifts_by_receiver.should == []
+  it "#gifts_by_receiver should be a sorted hash of receivers and gifts received" do
+    @event.gifts_by_receiver.must_equal []
     g = Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
-    @event.reload.gifts_by_receiver.should == [['R', [g]]]
+    @event.reload.gifts_by_receiver.must_equal [['R', [g]]]
     g2 = Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
-    @event.reload.gifts_by_receiver.should == [['R', [g, g2]]]
+    @event.reload.gifts_by_receiver.must_equal [['R', [g, g2]]]
     g3 = Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
-    @event.reload.gifts_by_receiver.should == [['R', [g, g2]], ['S', [g3]]]
+    @event.reload.gifts_by_receiver.must_equal [['R', [g, g2]], ['S', [g3]]]
   end
 
-  specify "#gifts_by_sender should be a sorted hash of senders and gifts sent" do
-    @event.gifts_by_sender.should == []
+  it "#gifts_by_sender should be a sorted hash of senders and gifts sent" do
+    @event.gifts_by_sender.must_equal []
     g = Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
-    @event.reload.gifts_by_sender.should == [['S', [g]]]
+    @event.reload.gifts_by_sender.must_equal [['S', [g]]]
     g2 = Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
-    @event.reload.gifts_by_sender.should == [['S', [g, g2]]]
+    @event.reload.gifts_by_sender.must_equal [['S', [g, g2]]]
     g3 = Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
-    @event.reload.gifts_by_sender.should == [['R', [g3]], ['S', [g, g2]]]
+    @event.reload.gifts_by_sender.must_equal [['R', [g3]], ['S', [g, g2]]]
   end
 
-  specify "#gifts_crosstab should be an array of receiver names and array of rows of sender names and number of gifts for each receiver" do
-    @event.gifts_crosstab.should == [[], []]
+  it "#gifts_crosstab should be an array of receiver names and array of rows of sender names and number of gifts for each receiver" do
+    @event.gifts_crosstab.must_equal [[], []]
     g = Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
-    @event.reload.gifts_crosstab.should == [[:R], [['S', 1]]]
+    @event.reload.gifts_crosstab.must_equal [[:R], [['S', 1]]]
     g2 = Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
-    @event.reload.gifts_crosstab.should == [[:R], [['S', 2]]]
+    @event.reload.gifts_crosstab.must_equal [[:R], [['S', 2]]]
     g3 = Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
-    @event.reload.gifts_crosstab.should == [[:R, :S], [['R', 0, 1], ['S', 2, 0]]]
+    @event.reload.gifts_crosstab.must_equal [[:R, :S], [['R', 0, 1], ['S', 2, 0]]]
   end
 
-  specify "#gifts_summary should be two sorted hashes of senders and receivers with the number of gifts sent or received" do
-    @event.gifts_summary.should == [[], []]
+  it "#gifts_summary should be two sorted hashes of senders and receivers with the number of gifts sent or received" do
+    @event.gifts_summary.must_equal [[], []]
     g = Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
-    @event.reload.gifts_summary.should == [[['S', 1]], [['R', 1]]]
+    @event.reload.gifts_summary.must_equal [[['S', 1]], [['R', 1]]]
     g2 = Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
-    @event.reload.gifts_summary.should == [[['S', 2]], [['R', 2]]]
+    @event.reload.gifts_summary.must_equal [[['S', 2]], [['R', 2]]]
     g3 = Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
-    @event.reload.gifts_summary.should == [[['R', 1], ['S', 2]], [['R', 2], ['S', 1]]]
+    @event.reload.gifts_summary.must_equal [[['R', 1], ['S', 2]], [['R', 2], ['S', 1]]]
   end
 
-  specify "#thank_you_notes should be a sorted hash of receivers with values being a sorted hash of senders with an associated array of gifts, excluding gifts where the sender was a receiver in the event" do
-    @event.thank_you_notes.should == []
+  it "#thank_you_notes should be a sorted hash of receivers with values being a sorted hash of senders with an associated array of gifts, excluding gifts where the sender was a receiver in the event" do
+    @event.thank_you_notes.must_equal []
     g = Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
-    @event.reload.thank_you_notes.should == [['R', [['S', ['G']]]]]
+    @event.reload.thank_you_notes.must_equal [['R', [['S', ['G']]]]]
     g2 = Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
-    @event.reload.thank_you_notes.should == [['R', [['S', ['G', 'G2']]]]]
+    @event.reload.thank_you_notes.must_equal [['R', [['S', ['G', 'G2']]]]]
     g3 = Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
-    @event.reload.thank_you_notes.should == []
+    @event.reload.thank_you_notes.must_equal []
   end
 end
 
 describe Gift do
-  before do
+  before(:all) do
     @user = User.create(:name=>'test', :password_hash=>'')
     @event = Event.create(:name=>'Christmas', :user_id=>@user.id)
     @sender = Person.create(:name=>'S', :user_id=>@user.id)
     @receiver = Person.create(:name=>'R', :user_id=>@user.id)
   end
+  before do
+    @user = User.call(@user.values.dup)
+    @event = Event.call(@event.values.dup)
+    @sender = Person.call(@sender.values.dup)
+    @receiver= Person.call(@receiver.values.dup)
+  end
 
-  specify "associations should be correct" do
+  it "associations should be correct" do
     @gift = Gift.create(:name=>'G', :event_id=>@event.id)
-    @gift.senders.should == []
-    @gift.receivers.should == []
+    @gift.senders.must_equal []
+    @gift.receivers.must_equal []
   end
 
-  specify ".add should add and return a gift with the given event, name, sender ids, receiver ids, sender names, and receiver names" do
-    Gift.count.should == 0
+  it ".add should add and return a gift with the given event, name, sender ids, receiver ids, sender names, and receiver names" do
+    Gift.count.must_equal 0
     gift = Gift.add(@event, 'G', [@sender.id], [@receiver.id], ['S2'], ['R2'])
-    Gift.count.should == 1
-    gift.should == Gift.first
-    gift.senders.map{|s| s.name}.should == %w'S S2'
-    gift.receivers.map{|r| r.name}.should == %w'R R2'
+    Gift.count.must_equal 1
+    gift.must_equal Gift.first
+    gift.senders.map{|s| s.name}.must_equal %w'S S2'
+    gift.receivers.map{|r| r.name}.must_equal %w'R R2'
   end
 
-  specify ".add should add new senders and receivers to the event, whether or not they already exist for the user" do
-    Gift.count.should == 0
+  it ".add should add new senders and receivers to the event, whether or not they already exist for the user" do
+    Gift.count.must_equal 0
     gift = Gift.add(@event, 'G', [], [], %w'S S2', %w'R R2')
-    @event.senders.map{|s| s.name}.should == %w'S S2'
-    @event.receivers.map{|r| r.name}.should == %w'R R2'
-    @event.gifts.should == [gift]
+    @event.senders.map{|s| s.name}.must_equal %w'S S2'
+    @event.receivers.map{|r| r.name}.must_equal %w'R R2'
+    @event.gifts.must_equal [gift]
   end
 
-  specify ".add should return nil and not add a gift if it isn't given at least one sender and at least one receiver" do
-    Gift.count.should == 0
-    Gift.add(@event, 'G2', [], [], [], []).should == nil
-    Gift.count.should == 0
-    Gift.add(@event, 'G2', [@sender.id], [], ['S2'], []).should == nil
-    Gift.count.should == 0
-    Gift.add(@event, 'G2', [], [@receiver.id], [], ['R2']).should == nil
-    Gift.count.should == 0
+  it ".add should return nil and not add a gift if it isn't given at least one sender and at least one receiver" do
+    Gift.count.must_equal 0
+    Gift.add(@event, 'G2', [], [], [], []).must_equal nil
+    Gift.count.must_equal 0
+    Gift.add(@event, 'G2', [@sender.id], [], ['S2'], []).must_equal nil
+    Gift.count.must_equal 0
+    Gift.add(@event, 'G2', [], [@receiver.id], [], ['R2']).must_equal nil
+    Gift.count.must_equal 0
   end
 end
 
 describe Person do
-  before do
+  before(:all) do
     @user = User.create(:name=>'test', :password_hash=>'')
     @event = Event.create(:name=>'Christmas', :user_id=>@user.id)
     @person = Person.create(:name=>'P', :user_id=>@user.id)
   end
-
-  specify "associations should be correct" do
-    @person.sender_events.should == []
-    @person.receiver_events.should == []
-    @person.gifts_sent.should == []
-    @person.gifts_received.should == []
+  before do
+    @user = User.call(@user.values.dup)
+    @event = Event.call(@event.values.dup)
+    @person = Person.call(@person.values.dup)
   end
 
-  specify ".for_user_by_id should find a person with the given id for the given user" do
-    Person.for_user_by_id(@user, @person.id).should == @person
+  it "associations should be correct" do
+    @person.sender_events.must_equal []
+    @person.receiver_events.must_equal []
+    @person.gifts_sent.must_equal []
+    @person.gifts_received.must_equal []
+  end
+
+  it ".for_user_by_id should find a person with the given id for the given user" do
+    Person.for_user_by_id(@user, @person.id).must_equal @person
   end
   
-  specify ".for_user_by_name should return the person for the given user with the given name if such person exists" do
-    Person.for_user_by_name(@user, 'P').should == @person
-    Person.count.should == 1
+  it ".for_user_by_name should return the person for the given user with the given name if such person exists" do
+    Person.for_user_by_name(@user, 'P').must_equal @person
+    Person.count.must_equal 1
   end
   
-  specify ".for_user_by_name should create a new person with the given user and name if the user doesn't already have a person with that name" do
+  it ".for_user_by_name should create a new person with the given user and name if the user doesn't already have a person with that name" do
     person = Person.for_user_by_name(@user, 'P2')
-    Person.count.should == 2
-    person.should_not == @person
-    person.class.should == Person
+    Person.count.must_equal 2
+    person.wont_equal @person
+    person.class.must_equal Person
   end
   
-  specify "#make_receiver should make this person a receiver in the given event" do
-    @person.make_receiver(@event).should == @person
-    @person.receiver_events.should == [@event]
-    @person.make_receiver(@event).should == @person
-    @person.reload.receiver_events.should == [@event]
+  it "#make_receiver should make this person a receiver in the given event" do
+    @person.make_receiver(@event).must_equal @person
+    @person.receiver_events.must_equal [@event]
+    @person.make_receiver(@event).must_equal @person
+    @person.reload.receiver_events.must_equal [@event]
   end
   
-  specify "#make_sender should make this person a sender in the given event" do
-    @person.make_sender(@event).should == @person
-    @person.sender_events.should == [@event]
-    @person.make_sender(@event).should == @person
-    @person.reload.sender_events.should == [@event]
+  it "#make_sender should make this person a sender in the given event" do
+    @person.make_sender(@event).must_equal @person
+    @person.sender_events.must_equal [@event]
+    @person.make_sender(@event).must_equal @person
+    @person.reload.sender_events.must_equal [@event]
   end
 end
 
 describe User do
-  before do
+  before(:all) do
     @user = User.create(:name=>'test', :password=>'blah')
   end
-  after do
-    @user.delete
+  before do
+    @user = User.call(@user.values.dup)
   end
 
-  specify "associations should be correct" do
-    @user.events.should == []
+  it "associations should be correct" do
+    @user.events.must_equal []
   end
 
-  specify "#password= should set a new password hash" do
+  it "#password= should set a new password hash" do
     pw = @user.password_hash
     @user.password = 'foo'
-    @user.password_hash.should_not == pw
-    User.login_user_id('test', 'foo').should == nil
+    @user.password_hash.wont_equal pw
+    User.login_user_id('test', 'foo').must_equal nil
     @user.save
-    User.login_user_id('test', 'foo').should == @user.id
+    User.login_user_id('test', 'foo').must_equal @user.id
   end
 
-  specify ".login_user_id should return nil unless both username and password are present" do
-    User.login_user_id(nil, nil).should == nil
-    User.login_user_id('test', nil).should == nil
-    User.login_user_id(nil, 'blah').should == nil
+  it ".login_user_id should return nil unless both username and password are present" do
+    User.login_user_id(nil, nil).must_equal nil
+    User.login_user_id('test', nil).must_equal nil
+    User.login_user_id(nil, 'blah').must_equal nil
   end
 
-  specify ".login_user_id should return nil unless a user with a given username exists" do
-    User.login_user_id('foo', nil).should == nil
+  it ".login_user_id should return nil unless a user with a given username exists" do
+    User.login_user_id('foo', nil).must_equal nil
   end
 
-  specify ".login_user_id should return nil unless the password matches for that username" do
-    User.login_user_id('test', 'wrong').should == nil
+  it ".login_user_id should return nil unless the password matches for that username" do
+    User.login_user_id('test', 'wrong').must_equal nil
   end
 
-  specify ".login_user_id should return the user's id if the password matches " do
-    User.login_user_id('test', 'blah').should == @user.id
+  it ".login_user_id should return the user's id if the password matches " do
+    User.login_user_id('test', 'blah').must_equal @user.id
   end
 end
