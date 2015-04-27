@@ -1,6 +1,11 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'roda'
+begin
+  require 'tilt/erubis'
+rescue LoadError
+  require 'tilt/erb'
+end
 require './models'
 require 'thamble'
 
