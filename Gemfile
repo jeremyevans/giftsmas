@@ -16,5 +16,6 @@ gem "unicorn"
 
 group :development, :test do
   gem "capybara", '>= 1.1.2'
-  gem "rspec", '>= 1.3'
+  gem "minitest", '>= 5'
+  gem "minitest-hooks", '>= 1.1.0'
 end
