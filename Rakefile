@@ -1,6 +1,5 @@
 require "rake"
 require "rake/clean"
-require 'rake/testtask'
 
 desc "Run model specs"
 task :model_spec do
