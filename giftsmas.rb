@@ -87,6 +87,18 @@ class Giftsmas < Roda
     view :content=>"<h3>The page you are looking for does not exist.</h3>"
   end
 
+  plugin :rodauth do
+    enable :login, :logout
+    session_key :user_id
+    login_param 'user'
+    login_label 'User'
+    login_column :name
+    account_model User
+    skip_status_checks? true
+    account_password_hash_column :password_hash
+    title_instance_variable :@title
+  end
+
   plugin :autoforme do
     model Event do
       columns [:name]
@@ -116,27 +128,7 @@ class Giftsmas < Roda
 
   route do |r|
     r.assets
-
-    r.is 'login' do
-      r.get do
-        :login
-      end
-
-      r.post do 
-        if i = User.login_user_id(r['user'], r['password'])
-          session[:user_id] = i
-          r.redirect('/choose_event')
-        else
-          flash[:error] = 'Bad User/Password'
-          r.redirect
-        end
-      end
-    end
-    
-    r.post 'logout' do
-      session.clear
-      r.redirect '/login'
-    end
+    r.rodauth
 
     if !session[:user_id] || !(@user = User[session[:user_id]])
       r.redirect('/login')

@@ -202,26 +202,6 @@ describe User do
     pw = @user.password_hash
     @user.password = 'foo'
     @user.password_hash.wont_equal pw
-    User.login_user_id('test', 'foo').must_equal nil
     @user.save
-    User.login_user_id('test', 'foo').must_equal @user.id
-  end
-
-  it ".login_user_id should return nil unless both username and password are present" do
-    User.login_user_id(nil, nil).must_equal nil
-    User.login_user_id('test', nil).must_equal nil
-    User.login_user_id(nil, 'blah').must_equal nil
-  end
-
-  it ".login_user_id should return nil unless a user with a given username exists" do
-    User.login_user_id('foo', nil).must_equal nil
-  end
-
-  it ".login_user_id should return nil unless the password matches for that username" do
-    User.login_user_id('test', 'wrong').must_equal nil
-  end
-
-  it ".login_user_id should return the user's id if the password matches " do
-    User.login_user_id('test', 'blah').must_equal @user.id
   end
 end
