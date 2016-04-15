@@ -39,3 +39,29 @@ class Gift < Sequel::Model
     super
   end
 end
+
+# Table: gifts
+# Columns:
+#  id          | integer                     | PRIMARY KEY DEFAULT nextval('gifts_id_seq'::regclass)
+#  name        | text                        | NOT NULL
+#  inserted_at | timestamp without time zone |
+#  event_id    | integer                     | NOT NULL
+#  user_id     | integer                     | NOT NULL
+# Indexes:
+#  gifts_pkey          | PRIMARY KEY btree (id)
+#  gifts_user_id_index | btree (user_id)
+# Check constraints:
+#  gifts_name_check | (char_length(name) > 0)
+# Foreign key constraints:
+#  gifts_event_id_fkey | (event_id) REFERENCES events(id)
+#  gifts_user_id_fkey  | (user_id) REFERENCES users(id)
+# Referenced By:
+#  gift_receivers | gift_receivers_gift_id_fkey | (gift_id) REFERENCES gifts(id)
+#  gift_senders   | gift_senders_gift_id_fkey   | (gift_id) REFERENCES gifts(id)
+# Triggers:
+#  check_event_user                       | BEFORE INSERT ON gifts FOR EACH ROW EXECUTE PROCEDURE check_event_user()
+#  pgt_ca_inserted_at                     | BEFORE INSERT OR UPDATE ON gifts FOR EACH ROW EXECUTE PROCEDURE inserted_at()
+#  pgt_cc_events__id__num_gifts__event_id | BEFORE INSERT OR DELETE ON gifts FOR EACH ROW EXECUTE PROCEDURE cc_event_num_gifts()
+#  pgt_im_event_id                        | BEFORE UPDATE ON gifts FOR EACH ROW EXECUTE PROCEDURE immutable_event_id()
+#  pgt_im_events_id                       | BEFORE UPDATE ON gifts FOR EACH ROW EXECUTE PROCEDURE immutable_event_id()
+#  pgt_im_user_id                         | BEFORE UPDATE ON gifts FOR EACH ROW EXECUTE PROCEDURE immutable_user_id()

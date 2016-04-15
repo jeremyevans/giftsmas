@@ -90,3 +90,23 @@ class Event < Sequel::Model
     receivers.sort.map{|k, v| [k, v.sort.map{|k2, v2| [k2, v2.sort]}]}
   end
 end
+
+# Table: events
+# Columns:
+#  id        | integer | PRIMARY KEY DEFAULT nextval('events_id_seq'::regclass)
+#  name      | text    | NOT NULL
+#  num_gifts | integer | NOT NULL DEFAULT 0
+#  user_id   | integer | NOT NULL
+# Indexes:
+#  events_pkey               | PRIMARY KEY btree (id)
+#  events_name_user_id_index | UNIQUE btree (name, user_id)
+# Check constraints:
+#  events_name_check | (char_length(name) > 0)
+# Foreign key constraints:
+#  events_user_id_fkey | (user_id) REFERENCES users(id)
+# Referenced By:
+#  event_receivers | event_receivers_event_id_fkey | (event_id) REFERENCES events(id)
+#  event_senders   | event_senders_event_id_fkey   | (event_id) REFERENCES events(id)
+#  gifts           | gifts_event_id_fkey           | (event_id) REFERENCES events(id)
+# Triggers:
+#  pgt_im_user_id | BEFORE UPDATE ON events FOR EACH ROW EXECUTE PROCEDURE immutable_user_id()
