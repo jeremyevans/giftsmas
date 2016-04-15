@@ -93,8 +93,7 @@ class Giftsmas < Roda
     login_param 'user'
     login_label 'User'
     login_column :name
-    account_model User
-    skip_status_checks? true
+    accounts_table :users
     account_password_hash_column :password_hash
     title_instance_variable :@title
   end
