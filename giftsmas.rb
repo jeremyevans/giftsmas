@@ -21,6 +21,8 @@ end
 
 module Giftsmas
 class App < Roda
+  opts[:root] = File.dirname(__FILE__)
+
   use Rack::Session::Cookie, :secret=>SECRET
   plugin :csrf
   plugin :static, %w'/favicon.ico'
