@@ -1,9 +1,11 @@
-class User < Sequel::Model
+module Giftsmas
+class User < Sequel::Model(DB)
   one_to_many :events, :order=>:name
 
   def password=(new_password)
     self.password_hash = BCrypt::Password.create(new_password, :cost=>BCRYPT_COST)
   end
+end
 end
 
 # Table: users

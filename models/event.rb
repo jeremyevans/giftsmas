@@ -1,8 +1,9 @@
-class Event < Sequel::Model
+module Giftsmas
+class Event < Sequel::Model(DB)
   many_to_one :user
   one_to_many :gifts, :eager=>[:receivers, :senders], :order=>:id
-  many_to_many :senders, :class=>:Person, :join_table=>:event_senders, :right_key=>:person_id, :order=>:name
-  many_to_many :receivers, :class=>:Person, :join_table=>:event_receivers, :right_key=>:person_id, :order=>:name
+  many_to_many :senders, :class=>"Giftsmas::Person", :join_table=>:event_senders, :right_key=>:person_id, :order=>:name
+  many_to_many :receivers, :class=>"Giftsmas::Person", :join_table=>:event_receivers, :right_key=>:person_id, :order=>:name
 
   dataset_module do
     def compare_by_receiver
@@ -89,6 +90,7 @@ class Event < Sequel::Model
     end
     receivers.sort.map{|k, v| [k, v.sort.map{|k2, v2| [k2, v2.sort]}]}
   end
+end
 end
 
 # Table: events

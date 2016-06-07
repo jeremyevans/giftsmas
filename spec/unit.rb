@@ -3,6 +3,8 @@ GIFTSMAS_ENV = :test
 require './models'
 require './spec/spec_helper'
 
+include Giftsmas
+
 describe Event do
   before(:all) do
     @user = User.create(:name=>'test', :password=>'')

@@ -1,6 +1,7 @@
-class Gift < Sequel::Model
-  many_to_many :senders, :class=>:Person, :join_table=>:gift_senders, :right_key=>:person_id, :order=>:name
-  many_to_many :receivers, :class=>:Person, :join_table=>:gift_receivers, :right_key=>:person_id, :order=>:name
+module Giftsmas
+class Gift < Sequel::Model(DB)
+  many_to_many :senders, :class=>"Giftsmas::Person", :join_table=>:gift_senders, :right_key=>:person_id, :order=>:name
+  many_to_many :receivers, :class=>"Giftsmas::Person", :join_table=>:gift_receivers, :right_key=>:person_id, :order=>:name
   many_to_one :event
 
   def self.add(event, gift_name, senders, receivers, new_senders, new_receivers)
@@ -38,6 +39,7 @@ class Gift < Sequel::Model
     self.user_id ||= event.user_id
     super
   end
+end
 end
 
 # Table: gifts

@@ -1,8 +1,9 @@
-class Person < Sequel::Model
-  many_to_many :sender_events, :class=>:Event, :join_table=>:event_senders, :right_key=>:event_id, :order=>:name
-  many_to_many :receiver_events, :class=>:Event, :join_table=>:event_receivers, :right_key=>:event_id, :order=>:name
-  many_to_many :gifts_sent, :class=>:Gift, :join_table=>:gift_senders, :right_key=>:gift_id, :order=>:inserted_at
-  many_to_many :gifts_received, :class=>:Gift, :join_table=>:gift_receivers, :right_key=>:gift_id, :order=>:inserted_at
+module Giftsmas
+class Person < Sequel::Model(DB)
+  many_to_many :sender_events, :class=>"Giftsmas::Event", :join_table=>:event_senders, :right_key=>:event_id, :order=>:name
+  many_to_many :receiver_events, :class=>"Giftsmas::Event", :join_table=>:event_receivers, :right_key=>:event_id, :order=>:name
+  many_to_many :gifts_sent, :class=>"Giftsmas::Gift", :join_table=>:gift_senders, :right_key=>:gift_id, :order=>:inserted_at
+  many_to_many :gifts_received, :class=>"Giftsmas::Gift", :join_table=>:gift_receivers, :right_key=>:gift_id, :order=>:inserted_at
 
   def self.for_user_by_id(user, id)
     first(:user_id=>user.id, :id=>id.to_i)
@@ -21,6 +22,7 @@ class Person < Sequel::Model
     add_sender_event(e) unless sender_events.include?(e)
     self
   end
+end
 end
 
 # Table: people

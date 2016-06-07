@@ -6,7 +6,7 @@ begin
 rescue LoadError
   require 'tilt/erb'
 end
-require './models'
+require ::File.expand_path('../models',  __FILE__)
 require 'thamble'
 
 PersonSplitter = /,/ unless defined?(PersonSplitter)
@@ -19,20 +19,21 @@ else
   SECRET = nil
 end
 
-class Giftsmas < Roda
+module Giftsmas
+class App < Roda
   use Rack::Session::Cookie, :secret=>SECRET
   plugin :csrf
   plugin :static, %w'/favicon.ico'
 
   plugin :h
-  plugin :render, :escape=>true, :cache=>ENV['RACK_ENV'] != 'development'
+  plugin :render, :escape=>true
   plugin :assets,
     :css=>%w'bootstrap.min.css application.scss',
     :css_opts=>{:style=>:compressed, :cache=>false},
     :css_dir=>nil,
     :compiled_path=>nil,
     :compiled_css_dir=>nil,
-    :precompiled=>'compiled_assets.json',
+    :precompiled=>File.expand_path('../compiled_assets.json', __FILE__),
     :prefix=>nil
   plugin :flash
   plugin :error_handler
@@ -88,6 +89,7 @@ class Giftsmas < Roda
   end
 
   plugin :rodauth do
+    db DB
     enable :login, :logout
     session_key :user_id
     login_param 'user'
@@ -100,6 +102,7 @@ class Giftsmas < Roda
 
   plugin :autoforme do
     model Event do
+      class_display_name 'Event'
       columns [:name]
       order [:name]
       association_links [:gifts]
@@ -107,6 +110,7 @@ class Giftsmas < Roda
       session_value :user_id
     end
     model Gift do
+      class_display_name 'Gift'
       supported_actions [:browse, :edit, :show, :search, :delete, :mtm_edit]
       columns [:name]
       order [:name]
@@ -115,6 +119,7 @@ class Giftsmas < Roda
       session_value :user_id
     end
     model Person do
+      class_display_name 'Person'
       columns [:name]
       order [:name]
       association_links [:sender_events, :receiver_events, :gifts_sent, :gifts_received]
@@ -226,4 +231,5 @@ class Giftsmas < Roda
 
     autoforme
   end
+end
 end

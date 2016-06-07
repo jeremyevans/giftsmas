@@ -7,8 +7,9 @@ require 'rack/test'
 require './giftsmas'
 require './spec/spec_helper'
 
-Capybara.app = Giftsmas.app
-Giftsmas.plugin :error_handler do |e|
+include Giftsmas
+Capybara.app = Giftsmas::App.app
+Giftsmas::App.plugin :error_handler do |e|
   raise e
 end
 
