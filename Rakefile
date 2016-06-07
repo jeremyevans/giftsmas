@@ -18,6 +18,6 @@ namespace :assets do
   desc "Precompile the assets"
   task :precompile do
     require './giftsmas'
-    Giftsmas.compile_assets
+    Giftsmas::App.compile_assets
   end
 end
