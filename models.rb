@@ -5,6 +5,7 @@ require 'bcrypt'
 require 'logger'
 require 'sequel'
 
+module Giftsmas
 unless defined?(GIFTSMAS_ENV)
 GIFTSMAS_ENV = ENV['GIFTSMAS_TEST'] ? :test : :production
 end
@@ -25,3 +26,4 @@ Sequel::Model.plugin :prepared_statements
 Sequel::Model.plugin :prepared_statements_associations
 
 %w'user event person gift'.each{|x| require ::File.expand_path("../models/#{x}", __FILE__)}
+end

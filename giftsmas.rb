@@ -9,6 +9,8 @@ end
 require ::File.expand_path('../models',  __FILE__)
 require 'thamble'
 
+module Giftsmas
+
 PersonSplitter = /,/ unless defined?(PersonSplitter)
 SECRET_FILE = File.join(File.dirname(__FILE__), 'giftsmas.secret')
 if ENV['GIFTSMAS_SECRET']
@@ -19,7 +21,6 @@ else
   SECRET = nil
 end
 
-module Giftsmas
 class App < Roda
   opts[:root] = File.dirname(__FILE__)
 
