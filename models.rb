@@ -23,6 +23,7 @@ else
 end
 
 Model = Class.new(Sequel::Model)
+Model.db = DB
 Model.plugin :prepared_statements
 Model.plugin :prepared_statements_associations
 
