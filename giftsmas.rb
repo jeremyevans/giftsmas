@@ -26,8 +26,8 @@ class App < Roda
 
   use Rack::Session::Cookie, :secret=>SECRET
   plugin :csrf
-  plugin :static, %w'/favicon.ico'
 
+  plugin :public, :gzip=>true
   plugin :h
   plugin :render, :escape=>true
   plugin :assets,
@@ -37,7 +37,8 @@ class App < Roda
     :compiled_path=>nil,
     :compiled_css_dir=>nil,
     :precompiled=>File.expand_path('../compiled_assets.json', __FILE__),
-    :prefix=>nil
+    :prefix=>nil,
+    :gzip=>true
   plugin :flash
   plugin :error_handler
   plugin :not_found
@@ -134,6 +135,7 @@ class App < Roda
   Forme.default_config = :mine
 
   route do |r|
+    r.public
     r.assets
     r.rodauth
 
