@@ -22,8 +22,9 @@ else
   BCRYPT_COST = BCrypt::Engine::MIN_COST
 end
 
-Sequel::Model.plugin :prepared_statements
-Sequel::Model.plugin :prepared_statements_associations
+Model = Class.new(Sequel::Model)
+Model.plugin :prepared_statements
+Model.plugin :prepared_statements_associations
 
 %w'user event person gift'.each{|x| require ::File.expand_path("../models/#{x}", __FILE__)}
 end

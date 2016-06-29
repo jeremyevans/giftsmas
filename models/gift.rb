@@ -1,5 +1,5 @@
 module Giftsmas
-class Gift < Sequel::Model(DB)
+class Gift < Model
   many_to_many :senders, :class=>"Giftsmas::Person", :join_table=>:gift_senders, :right_key=>:person_id, :order=>:name
   many_to_many :receivers, :class=>"Giftsmas::Person", :join_table=>:gift_receivers, :right_key=>:person_id, :order=>:name
   many_to_one :event

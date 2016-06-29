@@ -1,5 +1,5 @@
 module Giftsmas
-class User < Sequel::Model(DB)
+class User < Model
   one_to_many :events, :order=>:name
 
   def password=(new_password)
