@@ -29,7 +29,7 @@ class App < Roda
 
   plugin :public, :gzip=>true
   plugin :h
-  plugin :render, :escape=>true
+  plugin :render, :escape=>:erubi
   plugin :assets,
     :css=>%w'bootstrap.min.css application.scss',
     :css_opts=>{:style=>:compressed, :cache=>false},
