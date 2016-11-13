@@ -1,11 +1,17 @@
 #!/usr/bin/env ruby
 require 'rubygems'
 require 'roda'
+
 begin
-  require 'tilt/erubis'
+  require 'tilt/erubi'
 rescue LoadError
-  require 'tilt/erb'
+  begin
+    require 'tilt/erubis'
+  rescue LoadError
+    require 'tilt/erb'
+  end
 end
+
 require ::File.expand_path('../models',  __FILE__)
 require 'thamble'
 
