@@ -19,7 +19,7 @@ class Event < Model
       receivers = person_ds.select_map(:id)
   
       select_receivers = receivers.map do |id|
-        Sequel.function(:sum, Sequel.case({{id=>receiver_ds.where(:gift_id=>:gifts__id)}=>1}, 0)).as(id.to_s)
+        Sequel.function(:sum, Sequel.case({{id=>receiver_ds.where(:gift_id=>Sequel[:gifts][:id])}=>1}, 0)).as(id.to_s)
       end
   
       gifts_by_receiver = gift_ds.
@@ -58,10 +58,10 @@ class Event < Model
     rows = model.db[:gifts].
       filter(:event_id=>id).
       join(:gift_receivers, :gift_id=>:id).
-      join(:gift_senders, :gift_id=>:gifts__id).
+      join(:gift_senders, :gift_id=>Sequel[:gifts][:id]).
       join(Sequel.as(:people, :sender), :id=>:person_id).
-      select(Sequel.as(:sender__name, :sender_name), *person_names.sort.map{|k,v| Sequel.function(:sum, Sequel.case({k=>1}, 0, :gift_receivers__person_id)).as(v)}).
-      group_by(:sender__name).
+      select(Sequel.as(Sequel[:sender][:name], :sender_name), *person_names.sort.map{|k,v| Sequel.function(:sum, Sequel.case({k=>1}, 0, Sequel[:gift_receivers][:person_id])).as(v)}).
+      group_by(Sequel[:sender][:name]).
       order(:sender_name).map{|r| [r[:sender_name]] + person_name_values.map{|x| r[x]}}
     [person_name_values, rows]
   end

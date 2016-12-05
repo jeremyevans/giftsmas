@@ -5,7 +5,7 @@ Sequel.migration do
     alter_table(:gifts) do
       add_foreign_key :user_id, :users
     end
-    from(:gifts).update(:user_id=>from(:events).select(:user_id).where(:id=>:gifts__event_id))
+    from(:gifts).update(:user_id=>from(:events).select(:user_id).where(:id=>Sequel[:gifts][:event_id]))
     alter_table(:gifts) do
       set_column_not_null :user_id
     end
