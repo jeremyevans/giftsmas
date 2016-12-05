@@ -129,11 +129,11 @@ describe Gift do
 
   it ".add should return nil and not add a gift if it isn't given at least one sender and at least one receiver" do
     Gift.count.must_equal 0
-    Gift.add(@event, 'G2', [], [], [], []).must_equal nil
+    Gift.add(@event, 'G2', [], [], [], []).must_be_nil
     Gift.count.must_equal 0
-    Gift.add(@event, 'G2', [@sender.id], [], ['S2'], []).must_equal nil
+    Gift.add(@event, 'G2', [@sender.id], [], ['S2'], []).must_be_nil
     Gift.count.must_equal 0
-    Gift.add(@event, 'G2', [], [@receiver.id], [], ['R2']).must_equal nil
+    Gift.add(@event, 'G2', [], [@receiver.id], [], ['R2']).must_be_nil
     Gift.count.must_equal 0
   end
 end
