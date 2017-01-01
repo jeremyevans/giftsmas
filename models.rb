@@ -13,8 +13,9 @@ end
 begin
   require ::File.expand_path('../config',  __FILE__)
 rescue LoadError
-  DB = Sequel.connect(ENV['GIFTSMAS_DATABASE_URL'] || ENV['DATABASE_URL'] || "postgres:///giftsmas#{'_test' if GIFTSMAS_ENV != :production}")
+  DB = Sequel.connect(ENV['GIFTSMAS_DATABASE_URL'] || ENV['DATABASE_URL'] || "postgres:///giftsmas#{'_test' if GIFTSMAS_ENV != :production}", :identifier_mangling=>false)
 end
+DB.extension :freeze_datasets
 
 if GIFTSMAS_ENV == :production
   BCRYPT_COST = BCrypt::Engine::DEFAULT_COST
