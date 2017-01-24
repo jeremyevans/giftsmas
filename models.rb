@@ -26,7 +26,6 @@ end
 Model = Class.new(Sequel::Model)
 Model.db = DB
 Model.plugin :prepared_statements
-Model.plugin :prepared_statements_associations
 
 %w'user event person gift'.each{|x| require ::File.expand_path("../models/#{x}", __FILE__)}
 end
