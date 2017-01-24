@@ -29,6 +29,9 @@ end
 
 class App < Roda
   opts[:root] = File.dirname(__FILE__)
+  opts[:unsupported_block_result] = :raise
+  opts[:unsupported_matcher] = :raise
+  opts[:verbatim_string_matcher] = true
 
   use Rack::Session::Cookie, :secret=>SECRET
   plugin :csrf
@@ -82,7 +85,7 @@ class App < Roda
   end
 
   def with_event(path)
-    request.is "#{path}/:d" do |id|
+    request.is path, :d do |id|
       get_event(id)
       yield
     end
