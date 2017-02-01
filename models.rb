@@ -28,4 +28,5 @@ Model.db = DB
 Model.plugin :prepared_statements
 
 %w'user event person gift'.each{|x| require ::File.expand_path("../models/#{x}", __FILE__)}
+DB.freeze
 end
