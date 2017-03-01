@@ -7,7 +7,7 @@ gem "sequel_pg"
 gem "sequel_postgresql_triggers"
 gem "roda", '>= 1.2.0'
 gem "rodauth", '>= 1.0.0'
-gem "erubis"
+gem "erubi"
 gem "tilt"
 gem "sass"
 gem "bcrypt"
