@@ -10,17 +10,26 @@ Gem.suffix_pattern
 
 require './giftsmas'
 
+begin
+  require 'refrigerator'
+rescue LoadError
+else
+  Refrigerator.freeze_core(:except=>[(Object.superclass || Object).name])
+end
+
 Capybara.app = Giftsmas::App.app
 Giftsmas::App.plugin :error_handler do |e|
   raise e
 end
+
+Giftsmas::App.freeze
 
 class Minitest::HooksSpec
   include Rack::Test::Methods
   include Capybara::DSL
 
   def app
-    APP
+    Giftsmas::App
   end
 
   def create_user(name)
