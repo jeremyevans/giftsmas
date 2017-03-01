@@ -25,8 +25,11 @@ end
 
 Model = Class.new(Sequel::Model)
 Model.db = DB
+Model.plugin :forme
+Model.plugin :subclasses
 Model.plugin :prepared_statements
 
 %w'user event person gift'.each{|x| require ::File.expand_path("../models/#{x}", __FILE__)}
+Model.freeze_descendents
 DB.freeze
 end
