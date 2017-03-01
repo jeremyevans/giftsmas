@@ -4,10 +4,12 @@ require 'rubygems'
 require 'capybara'
 require 'capybara/dsl'
 require 'rack/test'
-require './giftsmas'
 require './spec/spec_helper'
 
-include Giftsmas
+Gem.suffix_pattern
+
+require './giftsmas'
+
 Capybara.app = Giftsmas::App.app
 Giftsmas::App.plugin :error_handler do |e|
   raise e
@@ -22,7 +24,7 @@ class Minitest::HooksSpec
   end
 
   def create_user(name)
-    User.create(:name=>name, :password=>'valid')
+    Giftsmas::User.create(:name=>name, :password=>'valid')
   end
 
   def login
@@ -67,7 +69,7 @@ describe "Giftsmas" do
   specify "should handle the login process and creating event" do
     event_page
 
-    event = Event.first
+    event = Giftsmas::Event.first
     event.name.must_equal 'Christmas'
     current_path.must_match %r{\A/add_gift/\d+\z}
   end
@@ -79,21 +81,21 @@ describe "Giftsmas" do
     fill_in 'new_receivers', :with=>'Allyson'
     fill_in 'gift', :with=>''
     click_on 'Add Gift'
-    Gift.count.must_equal 0
+    Giftsmas::Gift.count.must_equal 0
 
     click_link 'Giftsmas: Christmas'
     fill_in 'new_senders', :with=>'Jeremy'
     fill_in 'new_receivers', :with=>''
     fill_in 'gift', :with=>'Jewelry'
     click_on 'Add Gift'
-    Gift.count.must_equal 0
+    Giftsmas::Gift.count.must_equal 0
 
     click_link 'Giftsmas: Christmas'
     fill_in 'new_senders', :with=>''
     fill_in 'new_receivers', :with=>'Allyson'
     fill_in 'gift', :with=>'Jewelry'
     click_on 'Add Gift'
-    Gift.count.must_equal 0
+    Giftsmas::Gift.count.must_equal 0
   end
 
   specify "should add gifts correctly" do
@@ -103,8 +105,8 @@ describe "Giftsmas" do
     fill_in 'new_receivers', :with=>'Allyson'
     fill_in 'gift', :with=>'Jewelry'
     click_on 'Add Gift'
-    Gift.count.must_equal 1
-    gift = Gift.first
+    Giftsmas::Gift.count.must_equal 1
+    gift = Giftsmas::Gift.first
     gift.name.must_equal 'Jewelry'
     gift.senders.map{|s| s.name}.must_equal %w'Jeremy'
     gift.receivers.map{|s| s.name}.must_equal %w'Allyson'
@@ -121,8 +123,8 @@ describe "Giftsmas" do
     fill_in 'gift', :with=>'FooBar'
     click_on 'Add Gift'
 
-    Gift.count.must_equal 2
-    gift = Gift[:name=>'FooBar']
+    Giftsmas::Gift.count.must_equal 2
+    gift = Giftsmas::Gift[:name=>'FooBar']
     gift.name.must_equal 'FooBar'
     gift.senders.map{|x| x.name}.must_equal %w'Bar Foo Jeremy'
     gift.receivers.map{|x| x.name}.must_equal %w'Allyson Baz Qux'
@@ -140,8 +142,8 @@ describe "Giftsmas" do
 
   specify "/choose_event should change the current event" do
     create_user('jeremy')
-    e1 = Event.create(:user_id=>User.first.id, :name=>'Christmas')
-    e2 = Event.create(:user_id=>User.first.id, :name=>'Birthday')
+    e1 = Giftsmas::Event.create(:user_id=>Giftsmas::User.first.id, :name=>'Christmas')
+    e2 = Giftsmas::Event.create(:user_id=>Giftsmas::User.first.id, :name=>'Birthday')
     login
 
     select 'Birthday'
@@ -187,19 +189,19 @@ describe "Giftsmas" do
 
   specify "reports should be correct" do
     event_page
-    e = Event.first
-    p1, p2, p3, p4, p5 = [1, 2, 3, 4, 5].collect{|x| Person.create(:user_id=>e.user_id, :name=>"P#{x}")}
-    g1 = Gift.create(:event_id=>e.id, :name=>'G1')
+    e = Giftsmas::Event.first
+    p1, p2, p3, p4, p5 = [1, 2, 3, 4, 5].collect{|x| Giftsmas::Person.create(:user_id=>e.user_id, :name=>"P#{x}")}
+    g1 = Giftsmas::Gift.create(:event_id=>e.id, :name=>'G1')
     g1.add_sender(p1)
     g1.add_receiver(p2)
-    g2 = Gift.create(:event_id=>e.id, :name=>'G2')
+    g2 = Giftsmas::Gift.create(:event_id=>e.id, :name=>'G2')
     g2.add_sender(p1)
     g2.add_receiver(p2)
-    g3 = Gift.create(:event_id=>e.id, :name=>'G3')
+    g3 = Giftsmas::Gift.create(:event_id=>e.id, :name=>'G3')
     g3.add_sender(p1)
     g3.add_sender(p3)
     g3.add_receiver(p4)
-    g4 = Gift.create(:event_id=>e.id, :name=>'G4')
+    g4 = Giftsmas::Gift.create(:event_id=>e.id, :name=>'G4')
     g4.add_sender(p3)
     g4.add_receiver(p2)
     g4.add_receiver(p4)
@@ -260,12 +262,12 @@ describe "Giftsmas" do
 
   specify "users can't see other other users events, people, or gifts" do
     j = create_user('j')
-    je = Event.create(:user_id=>j.id, :name=>'JE')
-    jp = Person.create(:user_id=>j.id, :name=>'JP')
-    jg = Gift.create(:event_id=>je.id, :name=>'JG')
+    je = Giftsmas::Event.create(:user_id=>j.id, :name=>'JE')
+    jp = Giftsmas::Person.create(:user_id=>j.id, :name=>'JP')
+    jg = Giftsmas::Gift.create(:event_id=>je.id, :name=>'JG')
 
     event_page
-    jeremye = Event.exclude(:user_id=>j.id).first
+    jeremye = Giftsmas::Event.exclude(:user_id=>j.id).first
     visit('/choose_event')
     select 'Christmas'
     click_button 'Choose Event'
