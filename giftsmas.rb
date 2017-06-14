@@ -41,7 +41,6 @@ class App < Roda
   plugin :flash
   plugin :error_handler
   plugin :not_found
-  plugin :symbol_matchers
   plugin :symbol_views
 
   def html_opts(hash)
@@ -75,7 +74,7 @@ class App < Roda
   end
 
   def with_event(path)
-    request.is path, :d do |id|
+    request.is path, Integer do |id|
       get_event(id)
       yield
     end
