@@ -1,14 +1,13 @@
 ENV['GIFTSMAS_TEST'] = '1'
 GIFTSMAS_ENV = :test
-require 'rubygems'
 require 'capybara'
 require 'capybara/dsl'
 require 'rack/test'
-require './spec/spec_helper'
+require_relative 'spec_helper'
 
 Gem.suffix_pattern
 
-require './giftsmas'
+require_relative '../giftsmas'
 
 begin
   require 'refrigerator'

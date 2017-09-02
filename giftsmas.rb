@@ -1,9 +1,8 @@
-#!/usr/bin/env ruby
-require 'rubygems'
 require 'roda'
 
-require ::File.expand_path('../models',  __FILE__)
+require_relative 'models'
 require 'thamble'
+require 'tilt/erubi'
 
 module Giftsmas
 
@@ -19,16 +18,13 @@ end
 
 class App < Roda
   opts[:root] = File.dirname(__FILE__)
-  opts[:unsupported_block_result] = :raise
-  opts[:unsupported_matcher] = :raise
-  opts[:verbatim_string_matcher] = true
 
   use Rack::Session::Cookie, :secret=>SECRET
   plugin :csrf
 
   plugin :public, :gzip=>true
   plugin :h
-  plugin :render, :escape=>:erubi
+  plugin :render, :escape=>true
   plugin :assets,
     :css=>%w'bootstrap.min.css application.scss',
     :css_opts=>{:style=>:compressed, :cache=>false},

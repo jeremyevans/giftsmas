@@ -3,12 +3,12 @@ require "rake/clean"
 
 desc "Run model specs"
 task :model_spec do
-  sh %{#{FileUtils::RUBY} -I lib spec/unit.rb}
+  sh %{#{FileUtils::RUBY} spec/unit.rb}
 end
 
 desc "Run web specs"
 task :web_spec do
-  sh %{#{FileUtils::RUBY} -I lib spec/integration.rb}
+  sh %{#{FileUtils::RUBY} spec/integration.rb}
 end
 
 desc "Run model and web specs"

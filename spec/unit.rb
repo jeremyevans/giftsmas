@@ -1,7 +1,7 @@
 GIFTSMAS_ENV = :test
 
-require './models'
-require './spec/spec_helper'
+require_relative '../models'
+require_relative 'spec_helper'
 
 include Giftsmas
 
