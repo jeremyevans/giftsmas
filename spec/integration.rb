@@ -1,5 +1,3 @@
-ENV['GIFTSMAS_TEST'] = '1'
-GIFTSMAS_ENV = :test
 require 'capybara'
 require 'capybara/dsl'
 require 'rack/test'
@@ -8,6 +6,9 @@ require_relative 'spec_helper'
 Gem.suffix_pattern
 
 require_relative '../giftsmas'
+
+db_name = Giftsmas::DB.get{current_database.function}
+raise "Doesn't look like a test database (#{db_name}), not running tests" unless db_name =~ /test\z/
 
 begin
   require 'refrigerator'

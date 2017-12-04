@@ -1,3 +1,5 @@
+ENV['GIFTSMAS_TEST'] = '1'
+
 gem 'minitest'
 require 'minitest/autorun'
 require 'minitest/hooks/default'
