@@ -20,8 +20,20 @@ Install the necessary gems from the Gemfile using bundler or rubygems.
 
 Create the db and run the migration:
 
-  createdb giftsmas
-  sequel -m migrate postgres:///giftsmas
+  createuser -U postgres giftmas
+  createdb -O giftmas giftsmas
+  sequel -m migrate postgres:///?user=giftsmas
+
+Create an appropriate .env.rb file storing the rack session secret
+and database connection URL environment variables:
+
+  ENV['GIFTSMAS_SECRET'] ||= '...'
+  ENV['GIFTSMAS_DATABASE_URL'] ||= case Giftsmas::GIFTSMAS_ENV
+  when :production
+    'postgres:///giftsmas?user=giftsmas&password=...'
+  when :test
+    'postgres:///giftsmas_test?user=giftsmas&password=...'
+  end
 
 Create your user(s):
 
@@ -92,15 +104,15 @@ of gifts after they have been added, or to delete gifts.
 === Prerequisites to run the specs
 
 * rake
-* rspec 1.3+
+* minitest 5.7.0+
 * capybara
 
 === Setup
 
 Create the db and run the migration:
 
-  createdb giftsmas_test
-  sequel -m /path/to/giftsmas/migrate postgres:///giftsmas_test
+  createdb -O giftsmas giftsmas_test
+  sequel -m /path/to/giftsmas/migrate postgres:///giftsmas_test?user=giftsmas
 
 == Running the specs
 
