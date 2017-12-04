@@ -1,6 +1,0 @@
-DB = Sequel.connect((case(GIFTSMAS_ENV)
-when :production
-  'postgres:///giftsmas'
-when :test
-  'postgres:///giftsmas_test'
-end), :identifier_mangling=>false)

@@ -1,3 +1,1 @@
-spec/unicorn.log
-config.rb
-giftsmas.secret
+/.env.rb

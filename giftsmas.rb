@@ -7,19 +7,11 @@ require 'tilt/erubi'
 module Giftsmas
 
 PersonSplitter = /,/ unless defined?(PersonSplitter)
-SECRET_FILE = File.join(File.dirname(__FILE__), 'giftsmas.secret')
-if ENV['GIFTSMAS_SECRET']
-  SECRET = ENV['GIFTSMAS_SECRET']
-elsif File.file?(SECRET_FILE)
-  SECRET = File.read(SECRET_FILE)
-else
-  SECRET = nil
-end
 
 class App < Roda
   opts[:root] = File.dirname(__FILE__)
 
-  use Rack::Session::Cookie, :secret=>SECRET
+  use Rack::Session::Cookie, :secret=>ENV.delete('GIFTSMAS_SECRET')
   plugin :csrf
 
   plugin :public, :gzip=>true
