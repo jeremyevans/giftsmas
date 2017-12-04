@@ -3,9 +3,9 @@ source "https://rubygems.org"
 gem "pg"
 gem "autoforme", '>= 1.0.1'
 gem "sequel", '>= 5'
-gem "sequel_pg"
+gem "sequel_pg", ">= 1.7"
 gem "sequel_postgresql_triggers"
-gem "roda", '>= 3'
+gem "roda", '>= 3.3'
 gem "rodauth", '>= 1.0.0'
 gem "erubi"
 gem "tilt"
