@@ -30,6 +30,7 @@ class App < Roda
   plugin :error_handler
   plugin :not_found
   plugin :symbol_views
+  plugin :typecast_params
 
   def html_opts(hash)
     hash.map{|k,v| "#{k}=\"#{h(v)}\""}.join(' ')
@@ -69,9 +70,14 @@ class App < Roda
   end
 
   error do |e|
-    $stderr.puts e.message
-    e.backtrace.each{|x| $stderr.puts x}
-    view :content=>"<h3>Oops, an error occurred.</h3>"
+    case e
+    when Roda::RodaPlugins::TypecastParams::Error
+      response.status = 400
+      view(:content=>"<h1>Invalid parameter submitted: #{h e.param_name}</h1>")
+    else
+      $stderr.puts "#{e.class}: #{e.message}", e.backtrace
+      view(:content=>"<h1>Internal Server Error</h1>")
+    end
   end
 
   not_found do
@@ -136,11 +142,14 @@ class App < Roda
       end
 
       r.post do
-        new_senders = request['new_senders'].split(PersonSplitter).map(&:strip).reject(&:empty?)
-        new_receivers = request['new_receivers'].split(PersonSplitter).map(&:strip).reject(&:empty?)
-        senders = request['senders'].is_a?(Hash) ? request['senders'].keys : []
-        receivers = request['receivers'].is_a?(Hash) ? request['receivers'].keys : []
-        if gift = Gift.add(@event, request['gift'].to_s.strip, senders, receivers, new_senders, new_receivers)
+        new_senders = typecast_params.str!('new_senders').split(PersonSplitter).map(&:strip).reject(&:empty?)
+        new_receivers = typecast_params.str!('new_receivers').split(PersonSplitter).map(&:strip).reject(&:empty?)
+        senders = request.params['senders']
+        senders = senders.is_a?(Hash) ? senders.keys : []
+        receivers = request.params['receivers']
+        receivers = receivers.is_a?(Hash) ? receivers.keys : []
+        gift_name = typecast_params.nonempty_str('gift')
+        if gift_name && Gift.add(@event, gift_name, senders, receivers, new_senders, new_receivers)
           flash[:notice] = "Gift Added"
         else
           flash[:error] = "Gift Not Added: You must specify a name and at least one sender and receiver."
@@ -200,19 +209,18 @@ class App < Roda
       end
       
       r.post do
-        e = Event[:user_id=>@user.id, :id=>request['event_id'].to_i]
+        e = Event[:user_id=>@user.id, :id=>typecast_params.pos_int!('event_id')]
         r.redirect("/add_gift/#{e.id}", 303)
       end
     end
     
     r.post 'add_event' do
-      name = request['name'].to_s.strip
-      if name.empty?
+      if name = typecast_params.nonempty_str('name')
+        e = Event.create(:user_id=>@user.id, :name=>name)
+        r.redirect("/add_gift/#{e.id}", 303)
+      else
         flash[:error] = "Must provide a name for the event"
         r.redirect("/choose_event")
-      else
-        e = Event.create(:user_id=>@user.id, :name=>request['name'])
-        r.redirect("/add_gift/#{e.id}", 303)
       end
     end
 
