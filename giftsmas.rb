@@ -31,6 +31,7 @@ class App < Roda
   plugin :not_found
   plugin :symbol_views
   plugin :typecast_params
+  alias tp typecast_params
 
   def html_opts(hash)
     hash.map{|k,v| "#{k}=\"#{h(v)}\""}.join(' ')
@@ -142,13 +143,13 @@ class App < Roda
       end
 
       r.post do
-        new_senders = typecast_params.str!('new_senders').split(PersonSplitter).map(&:strip).reject(&:empty?)
-        new_receivers = typecast_params.str!('new_receivers').split(PersonSplitter).map(&:strip).reject(&:empty?)
+        new_senders = tp.str!('new_senders').split(PersonSplitter).map(&:strip).reject(&:empty?)
+        new_receivers = tp.str!('new_receivers').split(PersonSplitter).map(&:strip).reject(&:empty?)
         senders = request.params['senders']
         senders = senders.is_a?(Hash) ? senders.keys : []
         receivers = request.params['receivers']
         receivers = receivers.is_a?(Hash) ? receivers.keys : []
-        gift_name = typecast_params.nonempty_str('gift')
+        gift_name = tp.nonempty_str('gift')
         if gift_name && Gift.add(@event, gift_name, senders, receivers, new_senders, new_receivers)
           flash[:notice] = "Gift Added"
         else
@@ -209,13 +210,13 @@ class App < Roda
       end
       
       r.post do
-        e = Event[:user_id=>@user.id, :id=>typecast_params.pos_int!('event_id')]
+        e = Event[:user_id=>@user.id, :id=>tp.pos_int!('event_id')]
         r.redirect("/add_gift/#{e.id}", 303)
       end
     end
     
     r.post 'add_event' do
-      if name = typecast_params.nonempty_str('name')
+      if name = tp.nonempty_str('name')
         e = Event.create(:user_id=>@user.id, :name=>name)
         r.redirect("/add_gift/#{e.id}", 303)
       else
