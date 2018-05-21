@@ -15,6 +15,7 @@ Model.db = DB
 Model.plugin :forme
 Model.plugin :subclasses
 Model.plugin :prepared_statements
+Model.plugin :pg_auto_constraint_validations
 
 %w'user event person gift'.each{|x| require_relative "models/#{x}"}
 Model.freeze_descendents
