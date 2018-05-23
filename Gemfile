@@ -1,17 +1,16 @@
 source "https://rubygems.org"
 
 gem "pg"
-gem "autoforme", '>= 1.0.1'
+gem "autoforme", '>= 1.8'
 gem "sequel", '>= 5.8'
 gem "sequel_pg", ">= 1.7"
 gem "sequel_postgresql_triggers"
-gem "roda", '>= 3.5'
-gem "rodauth", '>= 1.0.0'
+gem "roda", '>= 3.9'
+gem "rodauth", '>= 1.17'
 gem "erubi"
 gem "tilt"
 gem "sass"
 gem "bcrypt"
-gem "rack_csrf"
 gem "thamble"
 gem "unicorn"
 

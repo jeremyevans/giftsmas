@@ -2,7 +2,7 @@
 
 <% unless @user.events.empty? %>
   <form action="/choose_event" class="form-inline" role="form" method="post">
-    <%== csrf_tag %>
+    <%== csrf_tag("/choose_event") %>
     <div class="form-group">
       <label for="event_id">Event</label>
       <%== model_select(:event_id, @user.events) %>
@@ -14,7 +14,7 @@
 <% end %>
 
 <form action="/add_event" class="form-inline" method="post">
-  <%== csrf_tag %>
+  <%== csrf_tag("/add_event") %>
   <div class="form-group">
     <label for="name">Event</label>
     <input type="text" name="name" id="name"/>

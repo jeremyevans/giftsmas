@@ -1,7 +1,7 @@
 <% @title = 'Add Gift' %>
 
 <form method='post' action='/add_gift/<%= @event.id %>' class="form-horizontal">
-<%== csrf_tag %>
+<%== csrf_tag("/add_gift/#{@event.id}") %>
   <div class="row">
     <% [:senders, :receivers].each do |sr|
     x = @event.send(sr)

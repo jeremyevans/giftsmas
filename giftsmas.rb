@@ -12,7 +12,7 @@ class App < Roda
   opts[:root] = File.dirname(__FILE__)
 
   use Rack::Session::Cookie, :secret=>ENV.delete('GIFTSMAS_SECRET')
-  plugin :csrf
+  plugin :route_csrf
 
   plugin :public, :gzip=>true
   plugin :h
@@ -86,7 +86,7 @@ class App < Roda
     view :content=>"<h3>The page you are looking for does not exist.</h3>"
   end
 
-  plugin :rodauth do
+  plugin :rodauth, :csrf=>:route_csrf do
     db DB
     enable :login, :logout
     session_key :user_id
@@ -131,6 +131,7 @@ class App < Roda
   route do |r|
     r.public
     r.assets
+    check_csrf!
     r.rodauth
 
     if !session[:user_id] || !(@user = User[session[:user_id]])
