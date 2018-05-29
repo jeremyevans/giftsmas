@@ -18,7 +18,7 @@ class App < Roda
   plugin :h
   plugin :render, :escape=>true
   plugin :assets,
-    :css=>%w'bootstrap.min.css application.scss',
+    :css=>%w'bootstrap-3.3.7.customized.min.css application.scss',
     :css_opts=>{:style=>:compressed, :cache=>false},
     :css_dir=>nil,
     :compiled_path=>nil,
@@ -127,6 +127,15 @@ class App < Roda
 
   Forme.register_config(:mine, :base=>:default, :labeler=>:explicit, :wrapper=>:div)
   Forme.default_config = :mine
+
+  plugin :content_security_policy do |csp|
+    csp.default_src :none
+    csp.style_src :self, :unsafe_inline
+    csp.img_src :self
+    csp.form_action :self
+    csp.base_uri :none
+    csp.frame_ancestors :none
+  end
 
   route do |r|
     r.public
