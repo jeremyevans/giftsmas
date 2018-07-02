@@ -89,7 +89,7 @@ class App < Roda
   plugin :rodauth, :csrf=>:route_csrf do
     db DB
     enable :login, :logout
-    session_key :user_id
+    session_key 'user_id'
     login_param 'user'
     login_label 'User'
     login_column :name
@@ -105,7 +105,7 @@ class App < Roda
       order [:name]
       association_links [:gifts]
       mtm_associations [:receivers, :senders]
-      session_value :user_id
+      session_value 'user_id'
     end
     model Gift do
       class_display_name 'Gift'
@@ -114,14 +114,14 @@ class App < Roda
       order [:name]
       mtm_associations [:receivers, :senders]
       association_links [:receivers, :senders]
-      session_value :user_id
+      session_value 'user_id'
     end
     model Person do
       class_display_name 'Person'
       columns [:name]
       order [:name]
       association_links [:sender_events, :receiver_events, :gifts_sent, :gifts_received]
-      session_value :user_id
+      session_value 'user_id'
     end
   end
 
@@ -143,7 +143,7 @@ class App < Roda
     check_csrf!
     r.rodauth
 
-    if !session[:user_id] || !(@user = User[session[:user_id]])
+    if !session['user_id'] || !(@user = User[session['user_id']])
       r.redirect('/login')
     end
     
