@@ -11,7 +11,6 @@ PersonSplitter = /,/ unless defined?(PersonSplitter)
 class App < Roda
   opts[:root] = File.dirname(__FILE__)
 
-  use Rack::Session::Cookie, :secret=>ENV.delete('GIFTSMAS_SECRET')
   plugin :route_csrf
 
   plugin :public, :gzip=>true
@@ -137,6 +136,11 @@ class App < Roda
     csp.frame_ancestors :none
   end
 
+  plugin :sessions,
+    :key=>'giftsmas.session',
+    :cipher_secret=>ENV.delete('GIFTSMAS_SESSION_CIPHER_SECRET'),
+    :hmac_secret=>ENV.delete('GIFTSMAS_SESSION_HMAC_SECRET')
+
   route do |r|
     r.public
     r.assets
@@ -162,9 +166,9 @@ class App < Roda
         receivers = receivers.is_a?(Hash) ? receivers.keys : []
         gift_name = tp.nonempty_str('gift')
         if gift_name && Gift.add(@event, gift_name, senders, receivers, new_senders, new_receivers)
-          flash[:notice] = "Gift Added"
+          flash['notice'] = "Gift Added"
         else
-          flash[:error] = "Gift Not Added: You must specify a name and at least one sender and receiver."
+          flash['error'] = "Gift Not Added: You must specify a name and at least one sender and receiver."
         end
         r.redirect
       end
@@ -231,7 +235,7 @@ class App < Roda
         e = Event.create(:user_id=>@user.id, :name=>name)
         r.redirect("/add_gift/#{e.id}", 303)
       else
-        flash[:error] = "Must provide a name for the event"
+        flash['error'] = "Must provide a name for the event"
         r.redirect("/choose_event")
       end
     end

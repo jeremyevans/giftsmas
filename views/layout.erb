@@ -47,11 +47,11 @@
 
 <div class="container" id="content">
 <%== "<h1>#{h @title}</h1>" if @title %>
-  <% if flash[:notice] %>
-    <div class="alert alert-success"><p><%= flash[:notice] %></p></div>
+  <% if flash['notice'] %>
+    <div class="alert alert-success"><p><%= flash['notice'] %></p></div>
   <% end %>
   <% if flash[:error] %>
-    <div class="alert alert-error"><p><%= flash[:error] %></p></div>
+    <div class="alert alert-error"><p><%= flash['error'] %></p></div>
   <% end %>
 <%== yield %>
 </div>

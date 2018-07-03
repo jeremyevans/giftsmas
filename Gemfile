@@ -1,12 +1,12 @@
 source "https://rubygems.org"
 
 gem "pg"
-gem "autoforme", '>= 1.8'
+gem "autoforme", '>= 1.9'
 gem "sequel", '>= 5.8'
 gem "sequel_pg", ">= 1.7"
 gem "sequel_postgresql_triggers"
-gem "roda", '>= 3.9'
-gem "rodauth", '>= 1.17'
+gem "roda", '>= 3.10'
+gem "rodauth", '>= 1.18'
 gem "erubi"
 gem "tilt"
 gem "sass"

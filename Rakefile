@@ -8,7 +8,7 @@ end
 
 desc "Run web specs"
 task :web_spec do
-  sh %{#{FileUtils::RUBY} spec/integration.rb}
+  sh %{#{FileUtils::RUBY} spec/integration.rb} if RUBY_VERSION >= '2'
 end
 
 desc "Run model and web specs"

@@ -14,7 +14,7 @@ begin
   require 'refrigerator'
 rescue LoadError
 else
-  Refrigerator.freeze_core(:except=>[(Object.superclass || Object).name])
+  Refrigerator.freeze_core
 end
 
 Capybara.app = Giftsmas::App.app

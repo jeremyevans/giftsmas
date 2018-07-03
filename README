@@ -27,8 +27,9 @@ Create the db and run the migration:
 Create an appropriate .env.rb file storing the rack session secret
 and database connection URL environment variables:
 
-  ENV['GIFTSMAS_SECRET'] ||= '...'
-  ENV['GIFTSMAS_DATABASE_URL'] ||= case Giftsmas::GIFTSMAS_ENV
+  ENV['GIFTSMAS_CIPHER_SECRET'] ||= '...' # 32 bytes
+  ENV['GIFTSMAS_HMAC_SECRET']   ||= '...' # >=32 bytes
+  ENV['GIFTSMAS_DATABASE_URL']  ||= case Giftsmas::GIFTSMAS_ENV
   when :production
     'postgres:///giftsmas?user=giftsmas&password=...'
   when :test
