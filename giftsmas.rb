@@ -138,8 +138,7 @@ class App < Roda
 
   plugin :sessions,
     :key=>'giftsmas.session',
-    :cipher_secret=>ENV.delete('GIFTSMAS_SESSION_CIPHER_SECRET'),
-    :hmac_secret=>ENV.delete('GIFTSMAS_SESSION_HMAC_SECRET')
+    :secret=>ENV.delete('GIFTSMAS_SESSION_SECRET')
 
   route do |r|
     r.public

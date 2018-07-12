@@ -14,15 +14,13 @@ begin
   require 'refrigerator'
 rescue LoadError
 else
-  Refrigerator.freeze_core
+  Refrigerator.freeze_core(:except=>['BasicObject'])
 end
 
-Capybara.app = Giftsmas::App.app
 Giftsmas::App.plugin :error_handler do |e|
   raise e
 end
-
-Giftsmas::App.freeze
+Capybara.app = Giftsmas::App.freeze.app
 
 class Minitest::HooksSpec
   include Rack::Test::Methods
