@@ -2,6 +2,7 @@ require_relative 'db'
 
 require 'bcrypt'
 require 'logger'
+require 'sequel'
 
 module Giftsmas
 if GIFTSMAS_ENV == :production
