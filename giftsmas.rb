@@ -1,6 +1,6 @@
-require 'roda'
-
 require_relative 'models'
+
+require 'roda'
 require 'thamble'
 require 'tilt/erubi'
 
