@@ -10,9 +10,11 @@ PersonSplitter = /,/ unless defined?(PersonSplitter)
 
 class App < Roda
   opts[:root] = File.dirname(__FILE__)
+  opts[:check_dynamic_arity] = false
+  opts[:check_arity] = :warn
 
+  plugin :direct_call
   plugin :route_csrf
-
   plugin :public, :gzip=>true
   plugin :h
   plugin :render, :escape=>true

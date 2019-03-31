@@ -5,7 +5,7 @@ gem "autoforme", '>= 1.9'
 gem "sequel", '>= 5.8'
 gem "sequel_pg", ">= 1.7"
 gem "sequel_postgresql_triggers"
-gem "roda", '>= 3.13'
+gem "roda", '>= 3.18'
 gem "rodauth", '>= 1.18'
 gem "erubi"
 gem "tilt"
