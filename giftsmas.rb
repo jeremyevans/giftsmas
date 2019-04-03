@@ -14,6 +14,7 @@ class App < Roda
   opts[:check_arity] = :warn
 
   plugin :direct_call
+  plugin :hash_routes
   plugin :route_csrf
   plugin :public, :gzip=>true
   plugin :h
@@ -83,8 +84,8 @@ class App < Roda
     end
   end
 
-  def with_event(path)
-    request.is path, Integer do |id|
+  def with_event
+    request.is Integer do |id|
       get_event(id)
       yield
     end
@@ -161,85 +162,39 @@ class App < Roda
     :key=>'giftsmas.session',
     :secret=>ENV.delete('GIFTSMAS_SESSION_SECRET')
 
-  route do |r|
-    r.public
-    r.assets
-    check_csrf!
-    r.rodauth
+  hash_routes :root do
+    views %w'manage'
 
-    if !session['user_id'] || !(@user = User[session['user_id']])
-      r.redirect('/login')
+    get "" do 
+      request.redirect '/choose_event'
     end
-    
-    with_event "add_gift" do
-      r.get do
-        @recent_gifts = Gift.recent(@event, 5)
-        :index
-      end
 
-      r.post do
-        new_senders = tp.str!('new_senders').split(PersonSplitter).map(&:strip).reject(&:empty?)
-        new_receivers = tp.str!('new_receivers').split(PersonSplitter).map(&:strip).reject(&:empty?)
-        senders = request.params['senders']
-        senders = senders.is_a?(Hash) ? senders.keys : []
-        receivers = request.params['receivers']
-        receivers = receivers.is_a?(Hash) ? receivers.keys : []
-        gift_name = tp.nonempty_str('gift')
-        if gift_name && Gift.add(@event, gift_name, senders, receivers, new_senders, new_receivers)
-          flash['notice'] = "Gift Added"
-        else
-          flash['error'] = "Gift Not Added: You must specify a name and at least one sender and receiver."
+    on "add_gift" do |r|
+      with_event do
+        r.get do
+          @recent_gifts = Gift.recent(@event, 5)
+          :index
         end
-        r.redirect
-      end
-    end
-      
-    r.on "reports", :method=>'get' do
-      with_event "event" do
-        :reports
-      end
-    
-      with_event 'chronological' do
-        @gifts = @event.gifts
-        :report_chron
-      end
-      
-      with_event 'crosstab' do
-        @headers, @rows = @event.gifts_crosstab
-        :report_crosstab
-      end
-      
-      with_event 'summary' do
-        @senders, @receivers = @event.gifts_summary
-        :report_summary
-      end
-      
-      with_event 'by_sender' do
-        @senders = @event.gifts_by_sender
-        :report_sender
-      end
-      
-      with_event 'by_receiver' do
-        @receivers = @event.gifts_by_receiver
-        :report_receiver
-      end
-      
-      with_event 'thank_yous' do
-        @receivers = @event.thank_you_notes
-        :report_thank_yous
-      end
 
-      r.is 'compare' do
-        @event_ds = Event.where(:user_id=>@user.id).exclude(:name=>'Test')
-        :report_compare
+        r.post do
+          new_senders = tp.str!('new_senders').split(PersonSplitter).map(&:strip).reject(&:empty?)
+          new_receivers = tp.str!('new_receivers').split(PersonSplitter).map(&:strip).reject(&:empty?)
+          senders = request.params['senders']
+          senders = senders.is_a?(Hash) ? senders.keys : []
+          receivers = request.params['receivers']
+          receivers = receivers.is_a?(Hash) ? receivers.keys : []
+          gift_name = tp.nonempty_str('gift')
+          if gift_name && Gift.add(@event, gift_name, senders, receivers, new_senders, new_receivers)
+            flash['notice'] = "Gift Added"
+          else
+            flash['error'] = "Gift Not Added: You must specify a name and at least one sender and receiver."
+          end
+          r.redirect
+        end
       end
     end
-    
-    r.root do
-      r.redirect '/choose_event'
-    end
-    
-    r.is 'choose_event' do
+
+    is 'choose_event' do |r|
       r.get do
         :choose_event
       end
@@ -250,20 +205,85 @@ class App < Roda
       end
     end
     
-    r.post 'add_event' do
+    post 'add_event' do
       if name = tp.nonempty_str('name')
         e = Event.create(:user_id=>@user.id, :name=>name)
-        r.redirect("/add_gift/#{e.id}", 303)
+        request.redirect("/add_gift/#{e.id}", 303)
       else
         flash['error'] = "Must provide a name for the event"
-        r.redirect("/choose_event")
+        request.redirect("/choose_event")
+      end
+    end
+  end
+
+  hash_routes :reports do
+    dispatch_from :root, "reports" do |r|
+      r.halt unless r.get?
+    end
+
+    on "event" do |_|
+      with_event do
+        :reports
+      end
+    end
+  
+    on 'chronological' do |_|
+      with_event do
+        @gifts = @event.gifts
+        :report_chron
+      end
+    end
+    
+    on 'crosstab' do |_|
+      with_event do
+        @headers, @rows = @event.gifts_crosstab
+        :report_crosstab
+      end
+    end
+    
+    on 'summary' do |_|
+      with_event do
+        @senders, @receivers = @event.gifts_summary
+        :report_summary
+      end
+    end
+    
+    on 'by_sender' do |_|
+      with_event do
+        @senders = @event.gifts_by_sender
+        :report_sender
+      end
+    end
+    
+    on 'by_receiver' do |_|
+      with_event do
+        @receivers = @event.gifts_by_receiver
+        :report_receiver
+      end
+    end
+    
+    on 'thank_yous' do |_|
+      with_event do
+        @receivers = @event.thank_you_notes
+        :report_thank_yous
       end
     end
 
-    r.get 'manage' do
-      :manage
+    is 'compare' do |_|
+      @event_ds = Event.where(:user_id=>@user.id).exclude(:name=>'Test')
+      :report_compare
     end
+  end
 
+  route do |r|
+    r.public
+    r.assets
+    check_csrf!
+    r.rodauth
+    rodauth.require_authentication
+    @user = User[session['user_id']]
+    
+    r.hash_routes(:root)
     autoforme
   end
 end
