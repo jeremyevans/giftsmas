@@ -9,7 +9,7 @@ gem "roda", '>= 3.19'
 gem "rodauth", '>= 1.18'
 gem "erubi"
 gem "tilt"
-gem "sass"
+gem "sassc"
 gem "bcrypt"
 gem "thamble"
 gem "unicorn"
