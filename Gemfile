@@ -8,8 +8,8 @@ gem "sequel_postgresql_triggers"
 gem "roda", '>= 3.19'
 gem "rodauth", '>= 1.18'
 gem "erubi"
-gem "tilt"
-gem "sassc"
+gem "tilt", '>= 2.0.10'
+gem "sassc", '>= 2'
 gem "bcrypt"
 gem "thamble"
 gem "unicorn"
