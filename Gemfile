@@ -19,4 +19,5 @@ group :development, :test do
   gem "minitest", '>= 5'
   gem "minitest-hooks", '>= 1.1.0'
   gem "minitest-global_expectations"
+  gem "warning"
 end
