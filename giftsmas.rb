@@ -18,6 +18,7 @@ class App < Roda
   plugin :route_csrf
   plugin :public, :gzip=>true
   plugin :h
+  plugin :r
   plugin :render, :escape=>true
   plugin :assets,
     :css=>%w'bootstrap-3.3.7.customized.min.css application.scss',
@@ -69,7 +70,7 @@ class App < Roda
 
   def get_event(id)
     @event = Event[:user_id=>@user.id, :id=>id.to_i] if id
-    request.redirect('/choose_event', 303) unless @event
+    r.redirect('/choose_event', 303) unless @event
   end
 
   def current_event
@@ -85,7 +86,7 @@ class App < Roda
   end
 
   def with_event
-    request.is Integer do |id|
+    r.is Integer do |id|
       get_event(id)
       yield
     end
@@ -166,7 +167,7 @@ class App < Roda
     views %w'manage'
 
     get "" do 
-      request.redirect '/choose_event'
+      r.redirect '/choose_event'
     end
 
     on "add_gift" do |r|
@@ -179,9 +180,9 @@ class App < Roda
         r.post do
           new_senders = tp.str!('new_senders').split(PersonSplitter).map(&:strip).reject(&:empty?)
           new_receivers = tp.str!('new_receivers').split(PersonSplitter).map(&:strip).reject(&:empty?)
-          senders = request.params['senders']
+          senders = r.params['senders']
           senders = senders.is_a?(Hash) ? senders.keys : []
-          receivers = request.params['receivers']
+          receivers = r.params['receivers']
           receivers = receivers.is_a?(Hash) ? receivers.keys : []
           gift_name = tp.nonempty_str('gift')
           if gift_name && Gift.add(@event, gift_name, senders, receivers, new_senders, new_receivers)
@@ -208,10 +209,10 @@ class App < Roda
     post 'add_event' do
       if name = tp.nonempty_str('name')
         e = Event.create(:user_id=>@user.id, :name=>name)
-        request.redirect("/add_gift/#{e.id}", 303)
+        r.redirect("/add_gift/#{e.id}", 303)
       else
         flash['error'] = "Must provide a name for the event"
-        request.redirect("/choose_event")
+        r.redirect("/choose_event")
       end
     end
   end
