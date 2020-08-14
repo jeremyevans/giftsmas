@@ -2,7 +2,7 @@ source "https://rubygems.org"
 
 gem "pg"
 gem "autoforme", '>= 1.9'
-gem "sequel", '>= 5.8'
+gem "sequel", '>= 5.35'
 gem "sequel_pg", ">= 1.7"
 gem "sequel_postgresql_triggers"
 gem "roda", '>= 3.35'
