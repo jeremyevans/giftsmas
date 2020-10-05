@@ -111,4 +111,4 @@ end
 #  event_senders   | event_senders_event_id_fkey   | (event_id) REFERENCES events(id)
 #  gifts           | gifts_event_id_fkey           | (event_id) REFERENCES events(id)
 # Triggers:
-#  pgt_im_user_id | BEFORE UPDATE ON events FOR EACH ROW EXECUTE PROCEDURE immutable_user_id()
+#  pgt_im_user_id | BEFORE UPDATE ON events FOR EACH ROW EXECUTE FUNCTION immutable_user_id()

@@ -43,4 +43,4 @@ end
 #  gift_receivers  | gift_receivers_person_id_fkey  | (person_id) REFERENCES people(id)
 #  gift_senders    | gift_senders_person_id_fkey    | (person_id) REFERENCES people(id)
 # Triggers:
-#  pgt_im_user_id | BEFORE UPDATE ON people FOR EACH ROW EXECUTE PROCEDURE immutable_user_id()
+#  pgt_im_user_id | BEFORE UPDATE ON people FOR EACH ROW EXECUTE FUNCTION immutable_user_id()
