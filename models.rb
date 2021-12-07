@@ -17,7 +17,7 @@ Model.plugin :forme
 Model.plugin :subclasses
 Model.plugin :prepared_statements
 Model.plugin :pg_auto_constraint_validations
-if ENV['RACK_ENV'] = 'test'
+if ENV['RACK_ENV'] == 'test'
   Model.plugin :forbid_lazy_load
   Model.plugin :instance_specific_default, :warn
 end
