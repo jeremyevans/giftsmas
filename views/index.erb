@@ -6,38 +6,33 @@
     <% [:senders, :receivers].each do |sr|
     x = @event.send(sr)
     unless x.empty? %>
-      <div class="col-md-3 giftpeople">
-        <%= sr.to_s.capitalize %>:<br />
+      <div class="col-md-<%= sr == :senders ? 4 : 2 %> giftpeople gift-<%= sr %>">
+        <h2><%= sr.to_s.capitalize %></h2>
+        <div class="checkboxes">
         <% x.each do |p| %>
           <input type="checkbox" id="<%= sr %>_<%= p.id %>" name="<%= sr %>[<%= p.id %>]" value="<%= p.id %>" /> <label for="<%= sr %>_<%= p.id %>"><%= p.name %></label><br />
         <% end %>
+        </div>
       </div>
     <% end end %>
     <div class="col-md-6">
-      <div class="row">
-        <fieldset>
-          <div class="form-group">
-            <label class="col-md-1 control-label" for="gift">Gift</label>
-            <div class="col-md-9 controls">
-              <input type="text" class="form-control" name="gift" id="gift" size="60" /><br />
-            </div>
-            <div class="col-md-2">
-              <input type="submit" class="btn btn-default" value="Add Gift"/>
-            </div>
-          </div>
-        </fieldset>
-
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="new_senders">New Senders</label>
-          <div class="col-md-8">
-            <input type="text" name="new_senders" id="new_senders" /><br />
-          </div>
-        <div class="form-group">
+      <div class="row center-align">
+        <label class="col-md-1 control-label" for="gift">Gift</label>
+        <div class="col-md-9 controls">
+          <input type="text" class="form-control" name="gift" id="gift" size="60" />
         </div>
-          <label class="col-md-4 control-label" for="new_receviers">New Receivers</label>
-          <div class="col-md-8">
-            <input type="text" name="new_receivers" id="new_receivers" /><br />
-          </div>
+        <div class="col-md-2 controls">
+          <input type="submit" class="btn btn-default" value="Add Gift"/>
+        </div>
+
+        <label class="col-md-4 control-label" for="new_senders">New Senders</label>
+        <div class="col-md-8 controls">
+          <input type="text" name="new_senders" id="new_senders" />
+        </div>
+
+        <label class="col-md-4 control-label" for="new_receviers">New Receivers</label>
+        <div class="col-md-8 controls">
+          <input type="text" name="new_receivers" id="new_receivers" />
         </div>
       </div>
 

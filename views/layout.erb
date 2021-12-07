@@ -3,7 +3,6 @@
 
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
-<meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Giftsmas<%= " - #{@title || @autoforme_action.title}" if @title || @autoforme_action %></title>
 <%== assets(:css) %>
@@ -25,7 +24,6 @@
           <li><a href="/Event/mtm_edit/<%= @event.id %>?association=receivers">Associate Receivers</a></li>
           <li><a href="/Event/mtm_edit/<%= @event.id %>?association=senders">Associate Senders</a></li>
           <li><a href="/reports/event/<%= @event.id %>">Reports</a></li>
-          <li class="divider-vertical"></li>
         <% end %>
         <% if @user %>
           <% if @event %>
@@ -46,13 +44,13 @@
 </nav>
 
 <div class="container" id="content">
-<%== "<h1>#{h @title}</h1>" if @title %>
   <% if flash['notice'] %>
-    <div class="alert alert-success"><p><%= flash['notice'] %></p></div>
+    <div class="alert alert-success"><%= flash['notice'] %></div>
   <% end %>
-  <% if flash[:error] %>
-    <div class="alert alert-error"><p><%= flash['error'] %></p></div>
+  <% if flash['error'] %>
+    <div class="alert alert-danger"><%= flash['error'] %></div>
   <% end %>
+  <%== "<h1>#{h @title}</h1>" if @title %>
 <%== yield %>
 </div>
 
