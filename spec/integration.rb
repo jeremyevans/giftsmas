@@ -149,8 +149,8 @@ describe "Giftsmas" do
 
   specify "/choose_event should change the current event" do
     create_user('jeremy')
-    e1 = Giftsmas::Event.create(:user_id=>Giftsmas::User.first.id, :name=>'Christmas')
-    e2 = Giftsmas::Event.create(:user_id=>Giftsmas::User.first.id, :name=>'Birthday')
+    Giftsmas::Event.create(:user_id=>Giftsmas::User.first.id, :name=>'Christmas')
+    Giftsmas::Event.create(:user_id=>Giftsmas::User.first.id, :name=>'Birthday')
     login
 
     select 'Birthday'
@@ -189,7 +189,7 @@ describe "Giftsmas" do
     %w'Event Gift Person'.each do |x|
       %w'browse delete edit search show'.each do |y|
         visit("/#{x}/#{y}")
-        page.html.must_match /Giftsmas - #{x} - #{y.capitalize}/
+        page.html.must_include "Giftsmas - #{x} - #{y.capitalize}"
       end
     end
   end
@@ -197,7 +197,7 @@ describe "Giftsmas" do
   specify "reports should be correct" do
     event_page
     e = Giftsmas::Event.first
-    p1, p2, p3, p4, p5 = [1, 2, 3, 4, 5].collect{|x| Giftsmas::Person.create(:user_id=>e.user_id, :name=>"P#{x}")}
+    p1, p2, p3, p4 = [1, 2, 3, 4, 5].collect{|x| Giftsmas::Person.create(:user_id=>e.user_id, :name=>"P#{x}")}
     g1 = Giftsmas::Gift.create(:event_id=>e.id, :name=>'G1')
     g1.add_sender(p1)
     g1.add_receiver(p2)
@@ -270,11 +270,11 @@ describe "Giftsmas" do
   specify "users can't see other other users events, people, or gifts" do
     j = create_user('j')
     je = Giftsmas::Event.create(:user_id=>j.id, :name=>'JE')
-    jp = Giftsmas::Person.create(:user_id=>j.id, :name=>'JP')
-    jg = Giftsmas::Gift.create(:event_id=>je.id, :name=>'JG')
+    Giftsmas::Person.create(:user_id=>j.id, :name=>'JP')
+    Giftsmas::Gift.create(:event_id=>je.id, :name=>'JG')
 
     event_page
-    jeremye = Giftsmas::Event.exclude(:user_id=>j.id).first
+    Giftsmas::Event.exclude(:user_id=>j.id).first
     visit('/choose_event')
     select 'Christmas'
     click_button 'Choose Event'
@@ -299,16 +299,16 @@ describe "Giftsmas" do
     click_button 'Choose Event'
     page.all("option").size.must_equal 0
     visit("/reports/chronological")
-    page.find('#content').text.wont_match /J[EPG]/
+    page.find('#content').text.wont_match(/J[EPG]/)
     visit("/reports/by_sender")
-    page.find('#content').text.wont_match /J[EPG]/
+    page.find('#content').text.wont_match(/J[EPG]/)
     visit("/reports/by_receiver")
-    page.find('#content').text.wont_match /J[EPG]/
+    page.find('#content').text.wont_match(/J[EPG]/)
     visit("/reports/summary")
-    page.find('#content').text.wont_match /J[EPG]/
+    page.find('#content').text.wont_match(/J[EPG]/)
     visit("/reports/crosstab")
-    page.find('#content').text.wont_match /J[EPG]/
+    page.find('#content').text.wont_match(/J[EPG]/)
     visit("/reports/thank_yous")
-    page.find('#content').text.wont_match /J[EPG]/
+    page.find('#content').text.wont_match(/J[EPG]/)
   end
 end

@@ -1,5 +1,3 @@
-Encoding.default_internal = Encoding.default_external = 'UTF-8'
-
 begin
   require_relative '.env'
 rescue LoadError

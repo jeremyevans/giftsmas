@@ -62,31 +62,31 @@ describe Event do
 
   it "#gifts_crosstab should be an array of receiver names and array of rows of sender names and number of gifts for each receiver" do
     @event.gifts_crosstab.must_equal [[], []]
-    g = Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
+    Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
     @event.reload.gifts_crosstab.must_equal [[:R], [['S', 1]]]
-    g2 = Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
+    Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
     @event.reload.gifts_crosstab.must_equal [[:R], [['S', 2]]]
-    g3 = Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
+    Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
     @event.reload.gifts_crosstab.must_equal [[:R, :S], [['R', 0, 1], ['S', 2, 0]]]
   end
 
   it "#gifts_summary should be two sorted hashes of senders and receivers with the number of gifts sent or received" do
     @event.gifts_summary.must_equal [[], []]
-    g = Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
+    Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
     @event.reload.gifts_summary.must_equal [[['S', 1]], [['R', 1]]]
-    g2 = Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
+    Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
     @event.reload.gifts_summary.must_equal [[['S', 2]], [['R', 2]]]
-    g3 = Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
+    Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
     @event.reload.gifts_summary.must_equal [[['R', 1], ['S', 2]], [['R', 2], ['S', 1]]]
   end
 
   it "#thank_you_notes should be a sorted hash of receivers with values being a sorted hash of senders with an associated array of gifts, excluding gifts where the sender was a receiver in the event" do
     @event.thank_you_notes.must_equal []
-    g = Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
+    Gift.add(@event, 'G', [@sender.id], [@receiver.id], [], [])
     @event.reload.thank_you_notes.must_equal [['R', [['S', ['G']]]]]
-    g2 = Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
+    Gift.add(@event, 'G2', [@sender.id], [@receiver.id], [], [])
     @event.reload.thank_you_notes.must_equal [['R', [['S', ['G', 'G2']]]]]
-    g3 = Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
+    Gift.add(@event, 'G3', [@receiver.id], [@sender.id], [], [])
     @event.reload.thank_you_notes.must_equal []
   end
 end
