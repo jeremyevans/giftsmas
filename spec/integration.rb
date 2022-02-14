@@ -21,6 +21,7 @@ Giftsmas::App.plugin :error_handler do |e|
   raise e
 end
 Capybara.app = Giftsmas::App.freeze.app
+Capybara.exact = true
 
 class Minitest::HooksSpec
   include Rack::Test::Methods
@@ -214,7 +215,7 @@ describe "Giftsmas" do
     g4.add_receiver(p4)
 
     click_on 'Reports'
-    click_on 'Chronological'
+    click_on 'In Chronological Order'
     page.all("table th").map{|s| s.text}.must_equal %w'Time Gift Senders Receivers'
     page.all("table tbody tr").map{|s| s.all('td')[1..-1].map{|s2| s2.text}}.must_equal [%w'G1 P1 P2', %w'G2 P1 P2', ['G3', 'P1, P3', 'P4'], ['G4', 'P3', 'P2, P4']]
 
