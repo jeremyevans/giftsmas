@@ -1,5 +1,6 @@
 require 'capybara'
 require 'capybara/dsl'
+require 'capybara/validate_html5'
 require 'rack/test'
 require_relative 'spec_helper'
 
