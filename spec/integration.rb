@@ -80,7 +80,7 @@ describe "Giftsmas" do
 
     event = Giftsmas::Event.first
     event.name.must_equal 'Christmas'
-    current_path.must_match %r{\A/add_gift/\d+\z}
+    current_path.must_match %r{\A/event/\d+/add_gift\z}
   end
 
   specify "should not add gifts without a sender, receiver, and a name" do

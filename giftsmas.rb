@@ -14,7 +14,6 @@ class App < Roda
   opts[:check_arity] = :warn
 
   plugin :direct_call
-  plugin :hash_routes
   plugin :route_csrf
   plugin :public, :gzip=>true
   plugin :h
@@ -68,11 +67,6 @@ class App < Roda
     select(name, objects.map{|o| [o.send(meth), o.id]}, opts)
   end
 
-  def get_event(id)
-    @event = Event[:user_id=>@user.id, :id=>id.to_i] if id
-    r.redirect('/choose_event', 303) unless @event
-  end
-
   def current_event
     if @event
       @event
@@ -82,13 +76,6 @@ class App < Roda
       elsif @autoforme_action.request.model == 'Gift' && @autoforme_action.request.id
         @event = Gift[:user_id=>@user.id, :id=>@autoforme_action.request.id].event
       end
-    end
-  end
-
-  def with_event
-    r.is Integer do |id|
-      get_event(id)
-      yield
     end
   end
 
@@ -163,15 +150,47 @@ class App < Roda
     :key=>'giftsmas.session',
     :secret=>ENV.delete('GIFTSMAS_SESSION_SECRET')
 
-  hash_routes :root do
-    views %w'manage'
-
-    get "" do 
+  route do |r|
+    r.public
+    r.assets
+    check_csrf!
+    r.rodauth
+    rodauth.require_authentication
+    @user = User[session['user_id']]
+    
+    r.root do 
       r.redirect '/choose_event'
     end
 
-    on "add_gift" do |r|
-      with_event do
+    r.get 'manage' do
+      :manage
+    end
+
+    r.is 'choose_event' do
+      r.get do
+        :choose_event
+      end
+      
+      r.post do
+        e = Event[:user_id=>@user.id, :id=>tp.pos_int!('event_id')]
+        r.redirect("/event/#{e.id}/add_gift", 303)
+      end
+    end
+    
+    r.post 'add_event' do
+      if name = tp.nonempty_str('name')
+        e = Event.create(:user_id=>@user.id, :name=>name)
+        r.redirect("/event/#{e.id}/add_gift", 303)
+      else
+        flash['error'] = "Must provide a name for the event"
+        r.redirect("/choose_event")
+      end
+    end
+
+    r.on "event", Integer do |event_id|
+      next unless @event = Event[:user_id=>@user.id, :id=>event_id]
+
+      r.is "add_gift" do
         r.get do
           @recent_gifts = Gift.recent(@event, 5)
           :index
@@ -193,98 +212,49 @@ class App < Roda
           r.redirect
         end
       end
-    end
 
-    is 'choose_event' do |r|
-      r.get do
-        :choose_event
-      end
-      
-      r.post do
-        e = Event[:user_id=>@user.id, :id=>tp.pos_int!('event_id')]
-        r.redirect("/add_gift/#{e.id}", 303)
-      end
-    end
-    
-    post 'add_event' do
-      if name = tp.nonempty_str('name')
-        e = Event.create(:user_id=>@user.id, :name=>name)
-        r.redirect("/add_gift/#{e.id}", 303)
-      else
-        flash['error'] = "Must provide a name for the event"
-        r.redirect("/choose_event")
-      end
-    end
-  end
-
-  hash_routes :reports do
-    dispatch_from :root, "reports" do |r|
-      r.halt unless r.get?
-    end
-
-    on "event" do |_|
-      with_event do
-        :reports
-      end
-    end
-  
-    on 'chronological' do |_|
-      with_event do
-        @gifts = @event.gifts
-        :report_chron
-      end
-    end
-    
-    on 'crosstab' do |_|
-      with_event do
-        @headers, @rows = @event.gifts_crosstab
-        :report_crosstab
-      end
-    end
-    
-    on 'summary' do |_|
-      with_event do
-        @senders, @receivers = @event.gifts_summary
-        :report_summary
-      end
-    end
-    
-    on 'by_sender' do |_|
-      with_event do
-        @senders = @event.gifts_by_sender
-        :report_sender
-      end
-    end
-    
-    on 'by_receiver' do |_|
-      with_event do
-        @receivers = @event.gifts_by_receiver
-        :report_receiver
-      end
-    end
-    
-    on 'thank_yous' do |_|
-      with_event do
-        @receivers = @event.thank_you_notes
-        :report_thank_yous
+      r.on "reports", :method=>'get' do
+        r.is do 
+          :reports
+        end
+        
+        r.is 'chronological' do
+          @gifts = @event.gifts
+          :report_chron
+        end
+        
+        r.is 'crosstab' do
+          @headers, @rows = @event.gifts_crosstab
+          :report_crosstab
+        end
+        
+        r.is 'summary' do
+          @senders, @receivers = @event.gifts_summary
+          :report_summary
+        end
+        
+        r.is 'by_sender' do
+          @senders = @event.gifts_by_sender
+          :report_sender
+        end
+        
+        r.is 'by_receiver' do
+          @receivers = @event.gifts_by_receiver
+          :report_receiver
+        end
+        
+        r.is 'thank_yous' do
+          @receivers = @event.thank_you_notes
+          :report_thank_yous
+        end
       end
     end
 
-    is 'compare' do |_|
+    r.get 'compare' do
       @event_ds = Event.where(:user_id=>@user.id).exclude(:name=>'Test')
       :report_compare
     end
-  end
 
-  route do |r|
-    r.public
-    r.assets
-    check_csrf!
-    r.rodauth
-    rodauth.require_authentication
-    @user = User[session['user_id']]
-    
-    r.hash_routes(:root)
     autoforme
   end
 end
