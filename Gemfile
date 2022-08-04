@@ -7,7 +7,7 @@ gem "sequel_pg", ">= 1.7"
 gem "sequel_postgresql_triggers"
 gem "roda", '>= 3.35'
 gem "rodauth", '>= 2'
-gem "erubi"
+gem "erubi", '>= 1.11.0'
 gem "tilt", '>= 2.0.10'
 gem "sassc", '>= 2'
 gem "bcrypt"

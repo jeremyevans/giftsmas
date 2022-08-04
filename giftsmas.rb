@@ -18,7 +18,7 @@ class App < Roda
   plugin :public, :gzip=>true
   plugin :h
   plugin :r
-  plugin :render, :escape=>true
+  plugin :render, :escape=>true, :template_opts=>{:chain_appends=>true}
   plugin :assets,
     :css=>%w'application.scss',
     :css_opts=>{:style=>:compressed, :cache=>false},
