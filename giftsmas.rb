@@ -31,6 +31,7 @@ class App < Roda
   plugin :flash
   plugin :error_handler
   plugin :not_found
+  plugin :disallow_file_uploads
   plugin :symbol_views
   plugin :request_aref, :raise
   plugin :typecast_params
