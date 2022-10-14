@@ -15,7 +15,6 @@ Model = Class.new(Sequel::Model)
 Model.db = DB
 Model.plugin :forme
 Model.plugin :subclasses
-Model.plugin :prepared_statements
 Model.plugin :pg_auto_constraint_validations
 Model.plugin :auto_restrict_eager_graph
 Model.plugin :require_valid_schema
