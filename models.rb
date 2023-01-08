@@ -24,6 +24,4 @@ if ENV['RACK_ENV'] == 'test'
 end
 
 %w'user event person gift'.each{|x| require_relative "models/#{x}"}
-Model.freeze_descendents
-DB.freeze
 end

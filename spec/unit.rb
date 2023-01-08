@@ -5,6 +5,8 @@ db_name = Giftsmas::DB.get{current_database.function}
 raise "Doesn't look like a test database (#{db_name}), not running tests" unless db_name =~ /test\z/
 
 include Giftsmas
+Model.freeze_descendents
+DB.freeze
 
 describe Event do
   before(:all) do
