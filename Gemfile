@@ -3,7 +3,7 @@ source "https://rubygems.org"
 gem "pg"
 gem "autoforme", '>= 1.9'
 gem "sequel", '>= 5.62'
-gem "sequel_pg", ">= 1.7"
+gem "sequel_pg", ">= 1.7", :require=>nil
 gem "sequel_postgresql_triggers"
 gem "roda", '>= 3.62'
 gem "rodauth", '>= 2'
