@@ -9,6 +9,13 @@ include Giftsmas
 Model.freeze_descendents
 DB.freeze
 
+begin
+  require 'refrigerator'
+rescue LoadError
+else
+  Refrigerator.freeze_core
+end
+
 describe Event do
   before(:all) do
     @user = User.create(:name=>'test', :password=>'')

@@ -17,7 +17,7 @@ begin
   require 'refrigerator'
 rescue LoadError
 else
-  Refrigerator.freeze_core(:except=>['BasicObject'])
+  Refrigerator.freeze_core
 end
 
 Giftsmas::App.plugin :error_handler do |e|
