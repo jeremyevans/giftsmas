@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 ENV['RACK_ENV'] = 'test'
 ENV['GIFTSMAS_TEST'] = '1'
 ENV['MT_NO_PLUGINS'] = '1' # Work around stupid autoloading of plugins

@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 require 'capybara'
 require 'capybara/dsl'
 require 'capybara/optionally_validate_html5'

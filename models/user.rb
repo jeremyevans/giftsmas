@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Giftsmas
 class User < Model
   one_to_many :events, :order=>:name

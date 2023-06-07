@@ -1,3 +1,4 @@
+# frozen_string_literal: true
 module Giftsmas
 class Gift < Model
   many_to_many :senders, :class=>"Giftsmas::Person", :join_table=>:gift_senders, :right_key=>:person_id, :order=>:name
