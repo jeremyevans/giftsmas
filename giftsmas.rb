@@ -3,7 +3,9 @@ require_relative 'models'
 
 require 'roda'
 require 'thamble'
+require 'tilt'
 require 'tilt/erubi'
+require 'tilt/string'
 
 module Giftsmas
 
@@ -25,7 +27,7 @@ class App < Roda
   plugin :public, :gzip=>true
   plugin :h
   plugin :r
-  plugin :render, :escape=>true, :template_opts=>{:chain_appends=>true}
+  plugin :render, :escape=>true, :template_opts=>{:chain_appends=>true, :freeze=>true, :skip_compiled_encoding_detection=>true}
   plugin :assets,
     :css=>%w'application.scss',
     :css_opts=>{:style=>:compressed, :cache=>false},

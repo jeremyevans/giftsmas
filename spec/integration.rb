@@ -8,6 +8,7 @@ require_relative 'spec_helper'
 Gem.suffix_pattern
 
 require_relative '../giftsmas'
+Tilt.finalize!
 
 db_name = Giftsmas::DB.get{current_database.function}
 raise "Doesn't look like a test database (#{db_name}), not running tests" unless db_name =~ /test\z/
