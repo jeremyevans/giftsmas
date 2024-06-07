@@ -13,6 +13,7 @@ gem "sassc", '>= 2'
 gem "bcrypt"
 gem "thamble"
 gem "unicorn"
+gem "logger"
 
 group :development, :test do
   gem "capybara", '>= 1.1.2'
