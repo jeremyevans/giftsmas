@@ -27,7 +27,7 @@ class App < Roda
   plugin :public, :gzip=>true
   plugin :h
   plugin :r
-  plugin :render, :escape=>true, :template_opts=>{:chain_appends=>true, :freeze=>true, :skip_compiled_encoding_detection=>true}
+  plugin :render, :escape=>true, :template_opts=>{:chain_appends=>true, :freeze=>true, :skip_compiled_encoding_detection=>true, scope_class: self, default_fixed_locals: '()', extract_fixed_locals: true}
   plugin :assets,
     :css=>%w'application.scss',
     :css_opts=>{:style=>:compressed, :cache=>false},
