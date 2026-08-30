@@ -116,6 +116,7 @@ class App < Roda
     accounts_table :users
     account_password_hash_column :password_hash
     title_instance_variable :@title
+    already_logged_in{redirect '/'}
   end
 
   plugin :autoforme do
